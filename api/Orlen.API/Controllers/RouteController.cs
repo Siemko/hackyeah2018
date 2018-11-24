@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Orlen.Services.RouteService;
+using Orlen.Services.RouteService.Models;
 using System.Threading.Tasks;
 
 namespace Orlen.API.Controllers
@@ -14,10 +15,10 @@ namespace Orlen.API.Controllers
             this.routeService = routeService;
         }
 
-        [HttpGet, Route("{fromPointId}/{toPointId}")]
-        public async Task<JContainer> Get(int fromPointId, int toPointId)
+        [HttpGet]
+        public async Task<JContainer> Get([FromQuery] GetRouteRequest request)
         {
-            return await routeService.GetRoute(fromPointId, toPointId);
+            return await routeService.GetRoute(request);
         }
     }
 }

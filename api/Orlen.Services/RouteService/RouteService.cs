@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using Orlen.Common.Extensions;
 using Orlen.Core;
+using Orlen.Services.RouteService.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,7 +14,7 @@ namespace Orlen.Services.RouteService
         {
         }
 
-        public async Task<JContainer> GetRoute(int fromPointId, int toPointId)
+        public async Task<JContainer> GetRoute(GetRouteRequest request)
         {
 
             var result = new List<object>
