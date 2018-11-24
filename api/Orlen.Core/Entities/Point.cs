@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Orlen.Core.Entities
 {
@@ -10,5 +11,6 @@ namespace Orlen.Core.Entities
         public double Lat { get; set; }
         [Column(TypeName = "decimal(18, 6)")]
         public double Lon { get; set; }
+        public List<Issue> Issues { get; set; }
     }
 }

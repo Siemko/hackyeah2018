@@ -53,5 +53,35 @@ namespace Orlen.Services.PointService
             point.Name = request.Name;
             await DataContext.SaveChangesAsync();
         }
+
+        public async Task AddIssue(AddPointIssueRequest request)
+        {
+            var point = await DataContext.Points.FirstOrDefaultAsync(p => p.Id == request.PointId);
+            if (point == null)
+                throw new ResourceNotFoundException($"There is no point with id {request.PointId}");
+
+            var issueType = await DataContext.IssueTypes.FirstOrDefaultAsync(i => i.Id == request.IssueTypeId);
+            if (issueType == null)
+                throw new ResourceNotFoundException($"There is no issue type with id {request.IssueTypeId}");
+
+            DataContext.Issues.Add(new Issue()
+            {
+                IssueTypeId = request.IssueTypeId,
+                PointId = request.PointId,
+                Value = request.Value,
+            });
+
+            await DataContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteIssue(int issueId)
+        {
+            var issue = await DataContext.Issues.FirstOrDefaultAsync(i => i.Id == issueId);
+            if (issue == null)
+                throw new ResourceNotFoundException($"There is no issue with id {issueId}");
+
+            DataContext.Remove(issue);
+            await DataContext.SaveChangesAsync();
+        }
     }
 }

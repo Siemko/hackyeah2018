@@ -10,7 +10,7 @@ using Orlen.Core;
 namespace Orlen.Core.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20181124165034_InitialCreate")]
+    [Migration("20181124190152_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,14 +27,36 @@ namespace Orlen.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Name");
+                    b.Property<int>("IssueTypeId");
 
-                    b.Property<decimal?>("Value")
-                        .HasColumnType("decimal(18, 6)");
+                    b.Property<int?>("PointId");
+
+                    b.Property<int?>("SectionId");
+
+                    b.Property<decimal?>("Value");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IssueTypeId");
+
+                    b.HasIndex("PointId");
+
+                    b.HasIndex("SectionId");
+
                     b.ToTable("Issues");
+                });
+
+            modelBuilder.Entity("Orlen.Core.Entities.IssueType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("IssueTypes");
                 });
 
             modelBuilder.Entity("Orlen.Core.Entities.Point", b =>
@@ -92,19 +114,6 @@ namespace Orlen.Core.Migrations
                     b.ToTable("Sections");
                 });
 
-            modelBuilder.Entity("Orlen.Core.Entities.SectionIssue", b =>
-                {
-                    b.Property<int>("IssueId");
-
-                    b.Property<int>("SectionId");
-
-                    b.HasKey("IssueId", "SectionId");
-
-                    b.HasIndex("SectionId");
-
-                    b.ToTable("SectionIssue");
-                });
-
             modelBuilder.Entity("Orlen.Core.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -126,6 +135,22 @@ namespace Orlen.Core.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Orlen.Core.Entities.Issue", b =>
+                {
+                    b.HasOne("Orlen.Core.Entities.IssueType", "IssueType")
+                        .WithMany()
+                        .HasForeignKey("IssueTypeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Orlen.Core.Entities.Point", "Point")
+                        .WithMany("Issues")
+                        .HasForeignKey("PointId");
+
+                    b.HasOne("Orlen.Core.Entities.Section", "Section")
+                        .WithMany("Issues")
+                        .HasForeignKey("SectionId");
+                });
+
             modelBuilder.Entity("Orlen.Core.Entities.Section", b =>
                 {
                     b.HasOne("Orlen.Core.Entities.Point", "End")
@@ -136,19 +161,6 @@ namespace Orlen.Core.Migrations
                     b.HasOne("Orlen.Core.Entities.Point", "Start")
                         .WithMany()
                         .HasForeignKey("StartId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Orlen.Core.Entities.SectionIssue", b =>
-                {
-                    b.HasOne("Orlen.Core.Entities.Issue", "Issue")
-                        .WithMany("SectionIssues")
-                        .HasForeignKey("IssueId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Orlen.Core.Entities.Section", "Section")
-                        .WithMany("SectionIssues")
-                        .HasForeignKey("SectionId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

@@ -8,17 +8,16 @@ namespace Orlen.Core.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Issues",
+                name: "IssueTypes",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
-                    Value = table.Column<decimal>(type: "decimal(18, 6)", nullable: true)
+                    Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Issues", x => x.Id);
+                    table.PrimaryKey("PK_IssueTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -98,32 +97,52 @@ namespace Orlen.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SectionIssue",
+                name: "Issues",
                 columns: table => new
                 {
-                    SectionId = table.Column<int>(nullable: false),
-                    IssueId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Value = table.Column<decimal>(nullable: true),
+                    IssueTypeId = table.Column<int>(nullable: false),
+                    PointId = table.Column<int>(nullable: true),
+                    SectionId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SectionIssue", x => new { x.IssueId, x.SectionId });
+                    table.PrimaryKey("PK_Issues", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SectionIssue_Issues_IssueId",
-                        column: x => x.IssueId,
-                        principalTable: "Issues",
+                        name: "FK_Issues_IssueTypes_IssueTypeId",
+                        column: x => x.IssueTypeId,
+                        principalTable: "IssueTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SectionIssue_Sections_SectionId",
+                        name: "FK_Issues_Points_PointId",
+                        column: x => x.PointId,
+                        principalTable: "Points",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Issues_Sections_SectionId",
                         column: x => x.SectionId,
                         principalTable: "Sections",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_SectionIssue_SectionId",
-                table: "SectionIssue",
+                name: "IX_Issues_IssueTypeId",
+                table: "Issues",
+                column: "IssueTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Issues_PointId",
+                table: "Issues",
+                column: "PointId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Issues_SectionId",
+                table: "Issues",
                 column: "SectionId");
 
             migrationBuilder.CreateIndex(
@@ -145,13 +164,13 @@ namespace Orlen.Core.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "SectionIssue");
+                name: "Issues");
 
             migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Issues");
+                name: "IssueTypes");
 
             migrationBuilder.DropTable(
                 name: "Sections");

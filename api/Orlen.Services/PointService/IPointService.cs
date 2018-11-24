@@ -8,7 +8,9 @@ namespace Orlen.Services.PointService
     {
         Task<JContainer> GetAll();
         Task Add(AddPointRequest request);
+        Task AddIssue(AddPointIssueRequest request);
         Task Delete(int id);
         Task Update(UpdatePointRequest request);
+        Task DeleteIssue(int issueId);
     }
 }

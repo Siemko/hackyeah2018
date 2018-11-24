@@ -49,16 +49,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseService.cs" />
-    <Compile Include="IssueService\Models\UpdateIssueRequest.cs" />
+    <Compile Include="IssueTypeService\IIssueTypeService.cs" />
+    <Compile Include="IssueTypeService\IssueTypeService.cs" />
     <Compile Include="PointService\IPointService.cs" />
+    <Compile Include="PointService\Models\AddPointIssueRequest.cs" />
     <Compile Include="PointService\Models\AddPointRequest.cs" />
     <Compile Include="PointService\Models\UpdatePointRequest.cs" />
     <Compile Include="PointService\PointService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="IssueService\IIssueService.cs" />
-    <Compile Include="IssueService\Models\AddSectionRequest.cs" />
-    <Compile Include="IssueService\IssueService.cs" />
     <Compile Include="SectionService\ISectionService.cs" />
+    <Compile Include="SectionService\Models\AddSectionIssueRequest.cs" />
     <Compile Include="SectionService\Models\AddSectionRequest.cs" />
     <Compile Include="SectionService\SectionService.cs" />
     <Compile Include="UserService\IUserService.cs" />

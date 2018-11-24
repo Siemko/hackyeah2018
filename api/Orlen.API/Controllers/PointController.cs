@@ -25,6 +25,11 @@ namespace Orlen.API.Controllers
         {
             await pointService.Add(request);
         }
+        [HttpPost, Route("issue")]
+        public async Task PostIssue([FromBody] AddPointIssueRequest request)
+        {
+            await pointService.AddIssue(request);
+        }
         [HttpPut]
         public async Task Put([FromBody] UpdatePointRequest request)
         {
@@ -34,6 +39,11 @@ namespace Orlen.API.Controllers
         public async Task Delete(int id)
         {
             await pointService.Delete(id);
+        }
+        [HttpDelete, Route("issue/{id}")]
+        public async Task PostIssue(int issueId)
+        {
+            await pointService.DeleteIssue(issueId);
         }
     }
 }

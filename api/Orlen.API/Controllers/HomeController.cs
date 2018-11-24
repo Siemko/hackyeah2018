@@ -5,6 +5,7 @@ namespace Orlen.API.Controllers
 {
     [Route("")]
     [AllowAnonymous]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class HomeController : BaseController
     {
 
