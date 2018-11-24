@@ -25,10 +25,20 @@ namespace Orlen.API.Controllers
         {
             await sectionService.Add(request);
         }
+        [HttpPost, Route("issue")]
+        public async Task PostIssue([FromBody] AddSectionIssueRequest request)
+        {
+            await sectionService.AddIssue(request);
+        }
         [HttpDelete, Route("{id}")]
-        public async Task Delete (int id)
+        public async Task Delete(int id)
         {
             await sectionService.Delete(id);
+        }
+        [HttpDelete, Route("issue/{id}")]
+        public async Task DeleteIssue(int issueId)
+        {
+            await sectionService.DeleteIssue(issueId);
         }
     }
 }

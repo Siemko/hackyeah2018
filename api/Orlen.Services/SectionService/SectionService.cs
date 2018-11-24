@@ -26,10 +26,9 @@ namespace Orlen.Services.SectionService
                 Start = new { s.Start.Lat, s.Start.Lon },
                 End = new { s.End.Lat, s.End.Lon },
                 s.Name,
-                Issues = s.SectionIssues.Select(si => si.Issue).Select(i =>
-                new
+                Issues = s.Issues.Select(i => new
                 {
-                    i.Name,
+                    i.IssueType.Name,
                     i.Value
                 })
             }).ToListAsync())
@@ -62,6 +61,36 @@ namespace Orlen.Services.SectionService
 
             DataContext.Remove(section);
 
+            await DataContext.SaveChangesAsync();
+        }
+
+        public async Task AddIssue(AddSectionIssueRequest request)
+        {
+            var section = await DataContext.Sections.FirstOrDefaultAsync(p => p.Id == request.SectionId);
+            if (section == null)
+                throw new ResourceNotFoundException($"There is no point with id {request.SectionId}");
+
+            var issueType = await DataContext.IssueTypes.FirstOrDefaultAsync(i => i.Id == request.IssueTypeId);
+            if (issueType == null)
+                throw new ResourceNotFoundException($"There is no issue type with id {request.IssueTypeId}");
+
+            DataContext.Issues.Add(new Issue()
+            {
+                IssueTypeId = request.IssueTypeId,
+                SectionId = request.SectionId,
+                Value = request.Value,
+            });
+
+            await DataContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteIssue(int issueId)
+        {
+            var issue = await DataContext.Issues.FirstOrDefaultAsync(i => i.Id == issueId);
+            if (issue == null)
+                throw new ResourceNotFoundException($"There is no issue with id {issueId}");
+
+            DataContext.Remove(issue);
             await DataContext.SaveChangesAsync();
         }
     }

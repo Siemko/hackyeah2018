@@ -127,14 +127,14 @@
     <Compile Include="DataContext.cs" />
     <Compile Include="DbInitializer.cs" />
     <Compile Include="Entities\Issue.cs" />
+    <Compile Include="Entities\IssueType.cs" />
     <Compile Include="Entities\Point.cs" />
     <Compile Include="Entities\Role.cs" />
     <Compile Include="Entities\Section.cs" />
-    <Compile Include="Entities\SectionIssue.cs" />
     <Compile Include="Entities\User.cs" />
-    <Compile Include="Migrations\20181124165034_InitialCreate.cs" />
-    <Compile Include="Migrations\20181124165034_InitialCreate.designer.cs">
-      <DependentUpon>20181124165034_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\20181124190152_InitialCreate.cs" />
+    <Compile Include="Migrations\20181124190152_InitialCreate.designer.cs">
+      <DependentUpon>20181124190152_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\DataContextModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

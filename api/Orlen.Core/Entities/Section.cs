@@ -10,6 +10,6 @@ namespace Orlen.Core.Entities
         public int EndId { get; set; }
         public Point Start { get; set; }
         public Point End { get; set; }
-        public List<SectionIssue> SectionIssues { get; set; }
+        public List<Issue> Issues { get; set; }
     }
 }
