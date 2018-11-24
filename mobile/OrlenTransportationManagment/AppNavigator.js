@@ -1,5 +1,4 @@
 import React from "react";
-import { View } from "react-native"
 import { createStackNavigator, createAppContainer  } from "react-navigation";
 import MapScreen from "./screens/MapScreen";
 import StartScreen from "./screens/StartScreen"
@@ -7,11 +6,11 @@ import ScannerScreen from "./screens/ScannerScreen"
 
 const AppNavigator = createStackNavigator({
     MapScreen: MapScreen,
-    MapScreen: MapScreen,
+    StartScreen: StartScreen,
     ScannerScreen: ScannerScreen
   },
   {
-    initialRouteName: "ScannerScreen",
+    initialRouteName: "StartScreen",
     headerMode: "none",
   });
 
