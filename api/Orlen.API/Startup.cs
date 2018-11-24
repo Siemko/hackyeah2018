@@ -10,6 +10,7 @@ using Orlen.API.Filters;
 using Orlen.Core;
 using Orlen.Services.IssueTypeService;
 using Orlen.Services.PointService;
+using Orlen.Services.RouteService;
 using Orlen.Services.SectionService;
 using Orlen.Services.UserService;
 using Swashbuckle.AspNetCore.Swagger;
@@ -41,6 +42,7 @@ namespace Orlen.API
             services.AddScoped<ISectionService, SectionService>();
             services.AddScoped<IPointService, PointService>();
             services.AddScoped<IIssueTypeService, IssueTypeService>();
+            services.AddScoped<IRouteService, RouteService>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddOptions();
