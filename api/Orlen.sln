@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.106
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orlen.API", "Orlen.API\Orlen.API.csproj", "{D23A4FA5-9F89-47C7-B64C-8AFD27431018}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orlen.API", "Orlen.API\Orlen.API.csproj", "{D23A4FA5-9F89-47C7-B64C-8AFD27431018}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orlen.Common", "Orlen.Common\Orlen.Common.csproj", "{6141818F-9E22-4A22-AA34-47F08F4B2AF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orlen.Core", "Orlen.Core\Orlen.Core.csproj", "{AE30140A-25C8-48AA-9116-1F46AA8B45CB}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orlen.Services", "Orlen.Services\Orlen.Services.csproj", "{2AAF3661-E42F-443C-B64C-86060722FF22}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orlen.Core", "Orlen.Core\Orlen.Core.csproj", "{FC7DA6BB-903C-482C-9239-6BB48D367C67}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,14 +25,14 @@ Global
 		{6141818F-9E22-4A22-AA34-47F08F4B2AF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6141818F-9E22-4A22-AA34-47F08F4B2AF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6141818F-9E22-4A22-AA34-47F08F4B2AF1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AE30140A-25C8-48AA-9116-1F46AA8B45CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AE30140A-25C8-48AA-9116-1F46AA8B45CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AE30140A-25C8-48AA-9116-1F46AA8B45CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AE30140A-25C8-48AA-9116-1F46AA8B45CB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2AAF3661-E42F-443C-B64C-86060722FF22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2AAF3661-E42F-443C-B64C-86060722FF22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AAF3661-E42F-443C-B64C-86060722FF22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2AAF3661-E42F-443C-B64C-86060722FF22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC7DA6BB-903C-482C-9239-6BB48D367C67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC7DA6BB-903C-482C-9239-6BB48D367C67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC7DA6BB-903C-482C-9239-6BB48D367C67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC7DA6BB-903C-482C-9239-6BB48D367C67}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
