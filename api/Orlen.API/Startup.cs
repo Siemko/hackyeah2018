@@ -45,7 +45,7 @@ namespace Orlen.API
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddOptions();
 
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info { Title = "Orlen API", Version = "v1" }); });
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info { Title = "Orlen Transportation Managment API", Version = "v1" }); });
 
             services.AddAuthentication(o =>
             {
@@ -71,6 +71,8 @@ namespace Orlen.API
             {
                 app.UseHsts();
             }
+
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
 
             app.UseSwagger();
 

@@ -1,8 +1,11 @@
-﻿namespace Orlen.Core.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Orlen.Core.Entities
 {
     public class Issue
     {
         public int Id { get; set; }
+        [Column(TypeName = "decimal(18, 6)")]
         public decimal? Value { get; set; }
         public int IssueTypeId { get; set; }
         public int? PointId { get; set; }

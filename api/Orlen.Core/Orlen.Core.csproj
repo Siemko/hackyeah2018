@@ -136,6 +136,10 @@
     <Compile Include="Migrations\20181124190152_InitialCreate.designer.cs">
       <DependentUpon>20181124190152_InitialCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20181124191436_IssueTypeValuePrecision.cs" />
+    <Compile Include="Migrations\20181124191436_IssueTypeValuePrecision.designer.cs">
+      <DependentUpon>20181124191436_IssueTypeValuePrecision.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\DataContextModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
