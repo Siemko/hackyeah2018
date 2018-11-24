@@ -14,7 +14,8 @@
     "react-scripts": "2.1.1",
     "reactstrap": "^6.5.0",
     "styled-components": "^4.1.1",
-    "styled-icons": "^5.1.0"
+    "styled-icons": "^5.1.0",
+    "wretch": "^1.4.2"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -1,72 +1,105 @@
 import React, { Component } from "react";
-import MapGL, { Marker } from "react-map-gl";
+import MapGL, { Marker, StaticMap } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MAPBOX_TOKEN } from "../utils/constants";
 import { MapMarkerAlt, TimesCircle } from "styled-icons/fa-solid";
 import DATA from "../geo.json";
-import DeckGL, { GeoJsonLayer, MapView } from "deck.gl";
-
+import DeckGL, { GeoJsonLayer, MapView, LineLayer } from "deck.gl";
+import wretch from "wretch";
 class Map extends Component {
   state = {
     viewport: {
       latitude: 52.589333,
       longitude: 19.677518,
-      zoom: 15
+      zoom: 14
     },
-    points: []
+    points: null,
+    sections: null
   };
 
+  async componentDidMount() {
+    const points = await wretch("https://orlenapi.azurewebsites.net/Point")
+      .get()
+      .json();
+    const sections = await wretch("https://orlenapi.azurewebsites.net/Section")
+      .get()
+      .json();
+    this.setState({ points, sections });
+  }
+
   renderLines = () => {
-    const roads = DATA;
+    const roads = this.state.sections.map(section => {
+      return [section.start.lon, section.start.lat];
+    });
+
+    const r = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: {
+            type: "LineString",
+            coordinates: [...roads]
+          }
+        }
+      ]
+    };
     return [
       new GeoJsonLayer({
         id: "geojson",
-        data: roads,
+        data: r,
         opacity: 1,
-        lineColor: [255, 0, 0],
-        lineWidthMinPixels: 2
+        stroked: false,
+        filled: true,
+        lineWidthMinPixels: 5,
+        parameters: {
+          depthTest: false
+        },
+        pickable: true,
+        onHover: info => console.log("Hovered:", info),
+        onClick: info => console.log("Clicked", info),
+        getLineColor: () => [0, 116, 217]
       })
     ];
   };
 
   render() {
+    if (!this.state.points || !this.state.sections) return null;
     return (
-      <DeckGL
+      <MapGL
         {...this.state.viewport}
-        layers={this.renderLines()}
-        onClick={event => {
-          this.setState(prevState => ({
-            points: [...prevState.points, { position: event.lngLat }]
-          }));
-        }}
-        controller
+        width="100%"
+        height="100%"
+        onViewportChange={viewport => this.setState({ viewport })}
+        mapboxApiAccessToken={MAPBOX_TOKEN}
       >
-        <MapView controller>
-          <MapGL
-            reuseMaps
-            preventStyleDiffing
-            {...this.state.viewport}
-            mapStyle="mapbox://styles/mapbox/streets-v10"
-            width="100%"
-            height="100%"
-            onViewportChange={viewport => this.setState({ viewport })}
+        <DeckGL
+          controller={true}
+          onViewportChange={v => this.setState({ viewport: v })}
+          {...this.state.viewport}
+          layers={this.renderLines()}
+          onLayerClick={info => console.log(info)}
+        >
+          <StaticMap
+            mapStyle="mapbox://styles/mapbox/navigation-preview-day-v2"
             mapboxApiAccessToken={MAPBOX_TOKEN}
-          />
-        </MapView>
-        {this.state.points.map(point => {
-          return (
-            <Marker
-              key={point.position[0]}
-              latitude={point.position[1]}
-              longitude={point.position[0]}
-              offsetLeft={-6}
-              offsetTop={-18}
-            >
-              <TimesCircle color="red" size="20" />
-            </Marker>
-          );
-        })}
-      </DeckGL>
+          >
+            {this.state.points.map(point => {
+              return (
+                <Marker
+                  key={point.id}
+                  latitude={point.lat}
+                  longitude={point.lon}
+                  offsetLeft={-10}
+                  offsetTop={-10}
+                >
+                  <MapMarkerAlt color="#0074D9" size="20" />
+                </Marker>
+              );
+            })}
+          </StaticMap>
+        </DeckGL>
+      </MapGL>
     );
   }
 }
