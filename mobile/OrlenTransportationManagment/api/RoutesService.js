@@ -1,11 +1,11 @@
 import wretch from "wretch"
 
-export default class IssuesService {
+export default class RoutesService {
 
     wretch = wretch().url("https://orlenapi.azurewebsites.net")
 
-    getIssues = async (code) => {
-        return await this.wretch.url("/IssueType").post({code: code}).json()
+    getRoute = async (code) => {
+        return await this.wretch.url(`/route/${code}`).get().json()
     }
-    
+
 }
