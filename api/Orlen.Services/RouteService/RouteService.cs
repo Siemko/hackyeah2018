@@ -111,6 +111,7 @@ namespace Orlen.Services.RouteService
                 RouteId = route.Id,
                 PointId = r.Id
             });
+            DataContext.RoutePoints.AddRange(routePoints);
             await DataContext.SaveChangesAsync();
         }
     }
