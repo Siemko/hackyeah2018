@@ -31,8 +31,8 @@ namespace Orlen.Services.RouteService
                     r.Weight,
                     Points = r.RoutePoints.Select(rp => rp.Point).Select(p => new
                     {
-                        p.Lat,
-                        p.Lon
+                        p.Latitude,
+                        p.Longitude
                     })
                 }).FirstOrDefaultAsync();
 
@@ -90,11 +90,14 @@ namespace Orlen.Services.RouteService
                     result.Add(new Point
                     {
                         Id = point.Id,
-                        Lat = point.Lat,
-                        Lon = point.Lon
+                        Latitude = point.Latitude,
+                        Longitude = point.Longitude
                     });
                 }
             }
+            if (result.Count() <= 1)
+                throw new InvalidParameterException("Ilość wygenerowanych punktów mniejsza lub równa 1. Trasa nie wygenerowna");
+
             var route = new Route()
             {
                 Weight = request.Weight,
@@ -110,7 +113,7 @@ namespace Orlen.Services.RouteService
             {
                 RouteId = route.Id,
                 PointId = r.Id
-            });
+            }).ToList();
             DataContext.RoutePoints.AddRange(routePoints);
             await DataContext.SaveChangesAsync();
         }
