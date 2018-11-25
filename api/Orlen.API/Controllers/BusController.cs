@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Orlen.Services.BusService;
+using Orlen.Services.BusService.Models;
 using System.Threading.Tasks;
 
 namespace Orlen.API.Controllers
@@ -18,5 +19,17 @@ namespace Orlen.API.Controllers
         {
             return await busService.Get();
         }
+
+        [HttpGet, Route("stops/{id}")]
+        public async Task<JContainer> GetBusStopes(int id)
+        {
+            return await busService.GetBusStopes(id);
+        }
+
+        //[HttpPost]
+        //public async Task<JContainer> BusRoute([FromBody] AddBusRequest request)
+        //{
+        //    return await busService.Add(request);
+        //}
     }
 }

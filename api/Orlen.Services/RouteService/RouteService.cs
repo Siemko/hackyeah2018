@@ -7,6 +7,7 @@ using Orlen.Common.Extensions;
 using Orlen.Core;
 using Orlen.Core.Entities;
 using Orlen.Services.RouteService.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,15 +51,24 @@ namespace Orlen.Services.RouteService
 
             return (new
             {
-                route = route,
-                sections = sections
+                route,
+                sections
             }).AsJContainer();
         }
 
 
 
-        public async Task Generate(GenerateRouteRequest request)
+        public async Task<JContainer> Generate(GenerateRouteRequest request)
         {
+            request.StartPointId = await DataContext.Points
+                                .Where(p => p.Name.Equals(request.StartPointName, StringComparison.CurrentCultureIgnoreCase))
+                                .Select(p => p.Id)
+                                .FirstOrDefaultAsync();
+
+            request.EndPointId = await DataContext.Points
+                                 .Where(p => p.Name.Equals(request.EndPointName, StringComparison.CurrentCultureIgnoreCase))
+                                 .Select(p => p.Id)
+                                 .FirstOrDefaultAsync();
 
             var result = await GetRoute(request);
 
@@ -101,20 +111,29 @@ namespace Orlen.Services.RouteService
 
             DataContext.RoutePoints.AddRange(routePoints);
             await DataContext.SaveChangesAsync();
+            return new
+            {
+                route.Id
+            }.AsJContainer();
         }
 
         private async Task<List<Point>> GetRoute(GenerateRouteRequest request)
         {
             var intersections = new List<Node>();
 
-            var groups = await DataContext.Sections
+            var rr = await DataContext.Sections.Where(s => s.Issues.Any(i => i.IssueType.Name == IssueTypeName.Disabled)).ToListAsync();
+
+            var sections = (await DataContext.Sections
                 .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.MaxHeight && i.Value <= request.Height))
                 .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.MaxLength && i.Value <= request.Length))
                 .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.MaxWeight && i.Value <= request.Weight))
                 .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.MaxWidth && i.Value <= request.Width))
                 .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.Disabled))
-                .GroupBy(g => g.StartId)
-                .ToListAsync();
+                .ToListAsync());
+
+            var groups = sections
+                            .GroupBy(g => g.StartId)
+                            .ToList();
 
             foreach (var group in groups)
             {
@@ -169,6 +188,17 @@ namespace Orlen.Services.RouteService
                 var route = await GetRoute(generateRouteRequest);
                 result.AddRange(route);
             }
+
+            result.Insert(0, new Point
+            {
+                Id = request.Points[0]
+            });
+
+            result.Add(new Point
+            {
+                Id = request.Points[request.Points.Count - 1]
+            });
+
 
             return result.AsJContainer();
         }

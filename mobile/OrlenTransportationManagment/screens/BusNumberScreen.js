@@ -1,19 +1,20 @@
 import React from "react";
 import { View, Text, Image } from "react-native";
 import BusNumber from "../components/BusNumber";
-import chunk from "lodash.chunk"
+import chunk from "lodash.chunk";
+import RedButton from "../components/RedButton";
 
 export default class BusNumberScreen extends React.Component {
     state = {
-        busNumbers: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]
+        busNumbers: ["1", "2", "3", "4", "5", "6", "7", "8"]
     };
 
-    busPress = (number) => {
-        console.log("xD")
+    busPress = number => {
+        console.log("xD");
         this.props.navigation.navigate("BusStationsScreen", {
             number: number
-        })
-    }
+        });
+    };
 
     render() {
         return (
@@ -33,12 +34,20 @@ export default class BusNumberScreen extends React.Component {
                         style={{
                             height: 200,
                             width: 300,
-                            alignSelf: "center",
+                            alignSelf: "center"
                         }}
                         resizeMode="contain"
                     />
 
-                    <Text style={{marginVertical: 20, fontSize: 25, fontWeight: "bold", textAlign: "center"}}>Wybierz numer linii</Text>
+                    <Text
+                        style={{
+                            marginVertical: 20,
+                            fontSize: 25,
+                            fontWeight: "bold",
+                            textAlign: "center"
+                        }}>
+                        Wybierz numer linii
+                    </Text>
                     <View
                         style={{
                             backgroundColor: "white",
@@ -47,16 +56,30 @@ export default class BusNumberScreen extends React.Component {
                             alignItems: "flex-start",
                             flexDirection: "row"
                         }}>
-
-                        {
-                            chunk(this.state.busNumbers, 4).map((value, index) => {
-                                return <View style={{ flexDirection: "row" }} key={index.toString()}>
+                        {chunk(this.state.busNumbers, 4).map((value, index) => {
+                            return (
+                                <View
+                                    style={{ flexDirection: "row" }}
+                                    key={index.toString()}>
                                     {value.map((v, i) => {
-                                        return <BusNumber lineNumber={v} onPress={() => this.busPress(v)} key={((index * i) + i).toString()} />
+                                        return (
+                                            <BusNumber
+                                                lineNumber={v}
+                                                onPress={() => this.busPress(v)}
+                                                key={(index * i + i).toString()}
+                                            />
+                                        );
                                     })}
                                 </View>
-                            })
-                        }
+                            );
+                        })}
+                    </View>
+
+                    <View style={{margin: 10}}>
+                        <RedButton
+                            title="Wróć"
+                            onPress={() => this.props.navigation.goBack()}
+                        />
                     </View>
                 </View>
             </View>

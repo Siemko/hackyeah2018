@@ -22,9 +22,9 @@ namespace Orlen.API.Controllers
         }
 
         [HttpPost]
-        public async Task Generate([FromBody] GenerateRouteRequest request)
+        public async Task<JContainer> Generate([FromBody] GenerateRouteRequest request)
         {
-            await routeService.Generate(request);
+            return await routeService.Generate(request);
         }
 
         [HttpPost, Route("from-points")]

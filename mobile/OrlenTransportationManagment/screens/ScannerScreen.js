@@ -28,6 +28,7 @@ class ScannerScreen extends React.Component {
                         alignItems: "center",
                         alignContent: "center",
                     }}>
+                    <Text style={{textAlign: "center", fontSize: 20, color: "white", marginBottom: 20}}>Skanuj kod QR</Text>
                     <View
                         style={{
                             width: 300,

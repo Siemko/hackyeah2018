@@ -67,14 +67,18 @@ namespace Orlen.Services.SectionService
 
         public async Task AddIssue(AddSectionIssueRequest request)
         {
+            if (await DataContext.Issues.AnyAsync(i => i.IssueTypeId == request.IssueTypeId && i.SectionId == request.SectionId))
+                return;
+
             var section = await DataContext.Sections.FirstOrDefaultAsync(p => p.Id == request.SectionId);
             if (section == null)
-                throw new ResourceNotFoundException($"There is no point with id {request.SectionId}");
+                throw new ResourceNotFoundException($"There is no section with id {request.SectionId}");
 
             var issueType = await DataContext.IssueTypes.FirstOrDefaultAsync(i => i.Id == request.IssueTypeId);
             if (issueType == null)
                 throw new ResourceNotFoundException($"There is no issue type with id {request.IssueTypeId}");
 
+            var oppositeSection = await DataContext.Sections.FirstOrDefaultAsync(s => s.StartId == section.EndId && s.EndId == section.StartId);
             DataContext.Issues.Add(new Issue()
             {
                 IssueTypeId = request.IssueTypeId,
@@ -82,16 +86,31 @@ namespace Orlen.Services.SectionService
                 Value = request.Value,
             });
 
+            if (oppositeSection != null)
+                DataContext.Issues.Add(new Issue()
+                {
+                    IssueTypeId = request.IssueTypeId,
+                    SectionId = oppositeSection.Id,
+                    Value = request.Value,
+                });
+
+
             await DataContext.SaveChangesAsync();
         }
 
-        public async Task DeleteIssue(int issueId)
+        public async Task ClearIssues(int sectionId)
         {
-            var issue = await DataContext.Issues.FirstOrDefaultAsync(i => i.Id == issueId);
-            if (issue == null)
-                throw new ResourceNotFoundException($"There is no issue with id {issueId}");
+            var section = await DataContext.Sections.FirstOrDefaultAsync(p => p.Id == sectionId);
+            if (section == null)
+                throw new ResourceNotFoundException($"There is no section with id {sectionId}");
 
-            DataContext.Remove(issue);
+            var oppositeSection = await DataContext.Sections.FirstOrDefaultAsync(s => s.StartId == section.EndId && s.EndId == section.StartId);
+
+            var issues = await DataContext.Issues.Where(i => i.SectionId == section.Id || i.SectionId == oppositeSection.Id).ToListAsync();
+
+            foreach (var issue in issues)
+                DataContext.Remove(issue);
+
             await DataContext.SaveChangesAsync();
         }
     }

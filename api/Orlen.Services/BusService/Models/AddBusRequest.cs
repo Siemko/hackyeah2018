@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
+using Orlen.Core.Entities;
 
 namespace Orlen.Services.BusService.Models
 {
     public class AddBusRequest
     {
         public string Name { get; set; }
-        public int RouteId { get; set; }
-        public IEnumerable<int> Stops { get; set; }
+        public IEnumerable<BusStop> Stops { get; set; }
     }
 }

@@ -17,7 +17,7 @@ export default {
             dispatch.loading.setLoadingVisible(true)
             const routesService = new RoutesService()
             const route = await routesService.getRoute(code)
-            this.setRoute(route)
+            this.setRoute(route.route)
             dispatch.loading.setLoadingVisible(false)
         }
     }),
