@@ -15,7 +15,7 @@ const AppNavigator = createStackNavigator({
     BusStationsScreen: BusStationsScreen
   },
   {
-    initialRouteName: "BusNumberScreen",
+    initialRouteName: "StartScreen",
     headerMode: "none",
   });
 

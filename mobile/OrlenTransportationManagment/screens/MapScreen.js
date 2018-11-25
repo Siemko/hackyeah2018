@@ -1,5 +1,6 @@
 import React from "react";
 import { Constants, Location, Permissions, MapView } from "expo";
+import { Ionicons, Feather } from '@expo/vector-icons';
 import { View } from "react-native";
 import { connect } from "react-redux";
 import Circle from "../node_modules/react-native-maps/lib/components/MapCircle";
@@ -39,7 +40,7 @@ class MapScreenn extends React.Component {
     async componentDidMount() {
         const { status } = await Permissions.askAsync(Permissions.LOCATION);
         this.setState({ permissionsGranded: status === "granted" });
-        await this.getLocation();
+        this.getLocation();
         const routeId = this.props.navigation.getParam("routeId", "0");
         this.props.getRoute(routeId);
     }
@@ -68,15 +69,16 @@ class MapScreenn extends React.Component {
     render() {
         return (
             <View style={{ flex: 1 }}>
+
+                <View style={{height: 100, flexDirection: "row", alignContent: "center", alignItems: "center", justifyContent: "center"}}>
+                    <Ionicons name="ios-snow" size={80} color="blue" style={{width: 80, height: 80, alignSelf: "center"}}/>
+                    <Feather name="alert-triangle" size={80} color="orange" style={{width: 80, height: 80, alignSelf: "center"}}/>
+                    <Ionicons name="ios-construct" size={80} color="black" style={{width: 80, height: 80, alignSelf: "center"}}/>
+                </View>
+
                 <MapView
                     style={{ flex: 1 }}
                     initialRegion={{
-                        latitude: this.state.region.latitude,
-                        longitude: this.state.region.longitude,
-                        latitudeDelta: 0.0,
-                        longitudeDelta: 0.015
-                    }}
-                    region={{
                         latitude: this.state.region.latitude,
                         longitude: this.state.region.longitude,
                         latitudeDelta: 0.0,
