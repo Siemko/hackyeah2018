@@ -15,10 +15,16 @@ namespace Orlen.API.Controllers
             this.routeService = routeService;
         }
 
-        [HttpGet]
-        public async Task<JContainer> Get([FromQuery] GetRouteRequest request)
+        [HttpGet, Route("{id}")]
+        public async Task<JContainer> Get(int id)
         {
-            return await routeService.GetRoute(request);
+            return await routeService.Get(id);
+        }
+
+        [HttpPost]
+        public async Task Generate([FromBody] GenerateRouteRequest request)
+        {
+            await routeService.Generate(request);
         }
     }
 }

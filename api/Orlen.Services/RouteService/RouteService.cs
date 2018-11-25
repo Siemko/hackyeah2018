@@ -1,14 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using Orlen.Common.Exceptions;
 using Orlen.Common.Extensions;
 using Orlen.Core;
+using Orlen.Core.Entities;
 using Orlen.Services.RouteService.Models;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Orlen.Services.RouteService.Models;
 
 namespace Orlen.Services.RouteService
 {
@@ -18,11 +18,36 @@ namespace Orlen.Services.RouteService
         {
         }
 
-        public async Task<JContainer> GetRoute(GetRouteRequest request)
+        public async Task<JContainer> Get(int id)
+        {
+            var route = await DataContext.Routes
+                .Where(r => r.Id == id)
+                .Select(r => new
+                {
+                    r.Id,
+                    r.Length,
+                    r.Width,
+                    r.Height,
+                    r.Weight,
+                    Points = r.RoutePoints.Select(rp => rp.Point).Select(p => new
+                    {
+                        p.Lat,
+                        p.Lon
+                    })
+                }).FirstOrDefaultAsync();
+
+            if (route == null)
+                throw new ResourceNotFoundException($"There is no route with id {id}");
+
+            return route.AsJContainer();
+        }
+
+        public async Task Generate(GenerateRouteRequest request)
         {
             var intersections = new List<Node>();
 
             var groups = await DataContext.Sections
+                //TODO: .Where wykluczenie nieczynnych na podstawie dancyh wejscicyjh
                 .GroupBy(g => g.StartId)
                 .ToListAsync();
 
@@ -42,33 +67,51 @@ namespace Orlen.Services.RouteService
                 intersections.Add(node);
             }
 
-            var gate1 = await DataContext.Points.FirstAsync(p => p.Name == "G1");
-            var graph = new Graph(intersections, intersections.FindIndex(v => v.Id == gate1.Id));
+            var startPoint = await DataContext.Points.FirstOrDefaultAsync(p => p.Id == request.StartPointId);
+            if (startPoint == null)
+                throw new ResourceNotFoundException($"There is no point with id {request.StartPointId}");
+
+            var graph = new Graph(intersections, intersections.FindIndex(v => v.Id == startPoint.Id));
 
             graph.InitializeNeighbors();
             graph.TransverNode(graph.Root);
 
-            var result = new List<object>();
+            var result = new List<Point>();
 
-            if (graph.Root.DistanceDict.ContainsKey(toPointId))
+            if (graph.Root.DistanceDict.ContainsKey(request.EndPointId))
             {
-                var pointsInRouteId = graph.Root.DistanceDict[toPointId].ToArray();
+                var pointsInRouteId = graph.Root.DistanceDict[request.EndPointId].ToArray();
                 var pointsInRoute = await DataContext.Points
                     .Where(p => pointsInRouteId.Contains(p.Id)).ToListAsync();
 
                 foreach (var pointId in pointsInRouteId)
                 {
                     var point = pointsInRoute.First(pir => pir.Id == pointId);
-                    result.Add(new
+                    result.Add(new Point
                     {
-                        id = point.Id,
-                        lat = point.Lat,
-                        lon = point.Lon
+                        Id = point.Id,
+                        Lat = point.Lat,
+                        Lon = point.Lon
                     });
                 }
             }
+            var route = new Route()
+            {
+                Weight = request.Weight,
+                Height = request.Height,
+                Length = request.Length,
+                Width = request.Width,
+            };
+            DataContext.Routes.Add(route);
 
-            return await Task.FromResult(result.AsJContainer());
+            await DataContext.SaveChangesAsync();
+
+            var routePoints = result.Select(r => new RoutePoint()
+            {
+                RouteId = route.Id,
+                PointId = r.Id
+            });
+            await DataContext.SaveChangesAsync();
         }
     }
 }

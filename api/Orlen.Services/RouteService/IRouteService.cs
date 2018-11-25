@@ -6,6 +6,7 @@ namespace Orlen.Services.RouteService
 {
     public interface IRouteService
     {
-        Task<JContainer> GetRoute(GetRouteRequest request);
+        Task<JContainer> Get(int id);
+        Task Generate(GenerateRouteRequest request);
     }
 }
