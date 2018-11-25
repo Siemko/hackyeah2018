@@ -38,7 +38,9 @@ class Map extends Component {
     popupObject: null,
     showTooltip: false,
     tooltipObject: null,
-    route: null
+    route: null,
+    showMarkers: false,
+    markersObject: null,
   };
 
   async componentDidMount() {
@@ -49,14 +51,12 @@ class Map extends Component {
       let sections = await wretch("https://orlenapi.azurewebsites.net/Section")
         .get()
         .json();
-      console.log(points);
       sections = sections.map(section => ({
         ...section,
         start: points.find(x => x.id === section.startId),
         end: points.find(x => x.id === section.endId)
       }));
-      console.log(sections);
-      const route = await wretch("https://orlenapi.azurewebsites.net/Route/1")
+      const route = await wretch("https://orlenapi.azurewebsites.net/Route/4")
         .get()
         .json();
       this.setState({ points, sections, isLoading: false, route });
@@ -89,24 +89,26 @@ class Map extends Component {
       features: [...better]
     };
 
-    const better2 = this.state.route.points.map(point => {
-      return {
-        type: "Feature",
-        geometry: {
-          type: "LineString",
-          coordinates: [point.longitude, point.latitude]
-        }
-      };
+    const routeCoords = this.state.route.points.map(point => {
+      return [point.longitude, point.latitude];
     });
+
+    const better2 = {
+      type: "Feature",
+      geometry: {
+        type: "LineString",
+        coordinates: [...routeCoords]
+      }
+    };
 
     const route = {
       type: "FeatureCollection",
-      features: [...better2]
+      features: [better2]
     };
 
     return [
       new GeoJsonLayer({
-        id: "geojson",
+        id: "ALL SECTIONS",
         data: r,
         opacity: 1,
         stroked: false,
@@ -127,11 +129,7 @@ class Map extends Component {
           } else this.setState({ showTooltip: false, tooltipObject: null });
         },
         onClick: info => {
-          const toolObj = {
-            lat: info.lngLat[1],
-            lon: info.lngLat[0],
-            issues: info.object.geometry.properties.issues
-          };
+            console.log(info)
           this.setState({
             showPopup: true,
             popupObject: info,
@@ -145,20 +143,20 @@ class Map extends Component {
         }
       }),
 
-    //   new GeoJsonLayer({
-    //     id: "geojson",
-    //     data: route,
-    //     opacity: 1,
-    //     stroked: false,
-    //     filled: true,
-    //     lineWidthMinPixels: 5,
-    //     parameters: {
-    //       depthTest: false
-    //     },
-    //     getLineColor: () => {
-    //         return [1, 1, 1]
-    //     }
-    //   })
+      new GeoJsonLayer({
+        id: "ROUTE",
+        data: route,
+        opacity: 1,
+        stroked: false,
+        filled: true,
+        lineWidthMinPixels: 5,
+        parameters: {
+          depthTest: false
+        },
+        getLineColor: () => {
+          return [1, 1, 1];
+        }
+      })
     ];
   };
 
@@ -202,7 +200,18 @@ class Map extends Component {
               <Circle
                 color="#fff"
                 size="20"
-                onClick={() => console.log(point)}
+                onMouseOver={() => {
+                  const toolObj = {
+                    lat: point.latitude,
+                    lon: point.longitude,
+                    issues: [],
+                    info: point.name
+                  };
+                  this.setState({ showTooltip: true, tooltipObject: toolObj });
+                }}
+                onClick={() => {
+                    this.setState({ showMarkers: true, markersObject: point, showTooltip: false, tooltipObject: null })
+                }}
               />
             </Marker>
           );
@@ -219,8 +228,23 @@ class Map extends Component {
             }
           >
             <PopupWrapper>
-              <h2>{this.state.popupObject.object.geometry.properties.id}</h2>
-              <h3>{this.state.popupObject.object.geometry.properties.name}</h3>
+              {this.state.popupObject.object.geometry.properties.id}
+            </PopupWrapper>
+          </Popup>
+        )}
+        {this.state.showMarkers && (
+          <Popup
+            latitude={this.state.markersObject.latitude}
+            longitude={this.state.markersObject.longitude}
+            closeButton={true}
+            closeOnClick={false}
+            anchor="top"
+            onClose={() =>
+              this.setState({ showMarkers: false, markersObject: null })
+            }
+          >
+            <PopupWrapper>
+              POINT
             </PopupWrapper>
           </Popup>
         )}
