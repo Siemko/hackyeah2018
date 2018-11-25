@@ -145,6 +145,9 @@ class Map extends PureComponent {
           });
         },
         getLineColor: f => {
+          if (f.geometry.properties.issues.find(i => i.id === 5)) {
+            return [255, 65, 54];
+          }
           if (f.geometry.properties.issues.length > 0) return [255, 220, 0];
           else if (!f.geometry.properties.issues.length) return [46, 204, 64];
         }
