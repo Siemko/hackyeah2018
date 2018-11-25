@@ -29,7 +29,7 @@ namespace Orlen.Services.RouteService
                     r.Width,
                     r.Height,
                     r.Weight,
-                    Points = r.RoutePoints.Select(rp => rp.Point).Select(p => new
+                    Points = r.RoutePoints.Select(rp => rp.Point).OrderBy(p => p.Order).Select(p => new
                     {
                         p.Latitude,
                         p.Longitude
@@ -44,57 +44,9 @@ namespace Orlen.Services.RouteService
 
         public async Task Generate(GenerateRouteRequest request)
         {
-            var intersections = new List<Node>();
 
-            var groups = await DataContext.Sections
-                //TODO: .Where wykluczenie nieczynnych na podstawie dancyh wejscicyjh
-                .GroupBy(g => g.StartId)
-                .ToListAsync();
+            var result = await GetRoute(request.StartPointId, request.EndPointId);
 
-            foreach (var group in groups)
-            {
-                var node = new Node
-                {
-                    Id = group.Key,
-                    DistanceDict = new Dictionary<int, List<int>>()
-                };
-
-                foreach (var g in group)
-                {
-                    node.DistanceDict.Add(g.EndId, new List<int>(g.EndId));
-                }
-
-                intersections.Add(node);
-            }
-
-            var startPoint = await DataContext.Points.FirstOrDefaultAsync(p => p.Id == request.StartPointId);
-            if (startPoint == null)
-                throw new ResourceNotFoundException($"There is no point with id {request.StartPointId}");
-
-            var graph = new Graph(intersections, intersections.FindIndex(v => v.Id == startPoint.Id));
-
-            graph.InitializeNeighbors();
-            graph.TransverNode(graph.Root);
-
-            var result = new List<Point>();
-
-            if (graph.Root.DistanceDict.ContainsKey(request.EndPointId))
-            {
-                var pointsInRouteId = graph.Root.DistanceDict[request.EndPointId].ToArray();
-                var pointsInRoute = await DataContext.Points
-                    .Where(p => pointsInRouteId.Contains(p.Id)).ToListAsync();
-
-                foreach (var pointId in pointsInRouteId)
-                {
-                    var point = pointsInRoute.First(pir => pir.Id == pointId);
-                    result.Add(new Point
-                    {
-                        Id = point.Id,
-                        Latitude = point.Latitude,
-                        Longitude = point.Longitude
-                    });
-                }
-            }
             if (result.Count() <= 1)
                 throw new InvalidParameterException("Ilość wygenerowanych punktów mniejsza lub równa 1. Trasa nie wygenerowna");
 
@@ -160,14 +112,17 @@ namespace Orlen.Services.RouteService
                 var pointsInRoute = await DataContext.Points
                     .Where(p => pointsInRouteId.Contains(p.Id)).ToListAsync();
 
+                int counter = 0;
                 foreach (var pointId in pointsInRouteId)
                 {
+                    counter++;
                     var point = pointsInRoute.First(pir => pir.Id == pointId);
                     result.Add(new Point
                     {
                         Id = point.Id,
                         Latitude = point.Latitude,
-                        Longitude = point.Longitude
+                        Longitude = point.Longitude,
+                        Order = counter
                     });
                 }
             }
