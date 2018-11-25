@@ -42,7 +42,9 @@ class App extends PureComponent {
               <StyledLink to="/bus">Bus</StyledLink>
             </Nav>
             <Switch>
+              <Route path="/map/:id" component={MapView} />
               <Route path="/map" component={MapView} />
+              <Route path="/bus/:id" component={BusView} />
               <Route path="/bus" component={BusView} />
               <Redirect to="/map" />
             </Switch>

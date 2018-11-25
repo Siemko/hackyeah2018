@@ -32,7 +32,8 @@ namespace Orlen.Services.BusService
             return (await DataContext.Buses.Select(b => new
             {
                 b.Id,
-                b.Name
+                b.Name,
+                b.RouteId
             }).ToListAsync()).AsJContainer();
         }
 
