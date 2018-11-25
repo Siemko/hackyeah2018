@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Orlen.Core;
 
 namespace Orlen.Core.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20181125004257_IsGate")]
+    partial class IsGate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,38 +96,6 @@ namespace Orlen.Core.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("Orlen.Core.Entities.Route", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("Height");
-
-                    b.Property<decimal>("Length");
-
-                    b.Property<decimal>("Weight");
-
-                    b.Property<decimal>("Width");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Routes");
-                });
-
-            modelBuilder.Entity("Orlen.Core.Entities.RoutePoint", b =>
-                {
-                    b.Property<int>("RouteId");
-
-                    b.Property<int>("PointId");
-
-                    b.HasKey("RouteId", "PointId");
-
-                    b.HasIndex("PointId");
-
-                    b.ToTable("RoutePoint");
-                });
-
             modelBuilder.Entity("Orlen.Core.Entities.Section", b =>
                 {
                     b.Property<int>("Id")
@@ -182,19 +152,6 @@ namespace Orlen.Core.Migrations
                     b.HasOne("Orlen.Core.Entities.Section", "Section")
                         .WithMany("Issues")
                         .HasForeignKey("SectionId");
-                });
-
-            modelBuilder.Entity("Orlen.Core.Entities.RoutePoint", b =>
-                {
-                    b.HasOne("Orlen.Core.Entities.Point", "Point")
-                        .WithMany("RoutePoints")
-                        .HasForeignKey("PointId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Orlen.Core.Entities.Route", "Route")
-                        .WithMany("RoutePoints")
-                        .HasForeignKey("RouteId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Orlen.Core.Entities.Section", b =>
