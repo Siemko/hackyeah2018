@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import MapGL, { Marker, StaticMap, Popup } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MAPBOX_TOKEN } from "../utils/constants";
-import { Circle, ExclamationTriangle } from "styled-icons/fa-solid";
+import { Circle, ExclamationTriangle, ToriiGate } from "styled-icons/fa-solid";
 import { Smile } from "styled-icons/fa-regular";
 import DeckGL, { GeoJsonLayer } from "deck.gl";
 import { ClimbingBoxLoader } from "react-spinners";
@@ -40,7 +40,7 @@ class Map extends Component {
     tooltipObject: null,
     route: null,
     showMarkers: false,
-    markersObject: null,
+    markersObject: null
   };
 
   async componentDidMount() {
@@ -129,7 +129,6 @@ class Map extends Component {
           } else this.setState({ showTooltip: false, tooltipObject: null });
         },
         onClick: info => {
-            console.log(info)
           this.setState({
             showPopup: true,
             popupObject: info,
@@ -210,7 +209,12 @@ class Map extends Component {
                   this.setState({ showTooltip: true, tooltipObject: toolObj });
                 }}
                 onClick={() => {
-                    this.setState({ showMarkers: true, markersObject: point, showTooltip: false, tooltipObject: null })
+                  this.setState({
+                    showMarkers: true,
+                    markersObject: point,
+                    showTooltip: false,
+                    tooltipObject: null
+                  });
                 }}
               />
             </Marker>
@@ -244,7 +248,9 @@ class Map extends Component {
             }
           >
             <PopupWrapper>
-              POINT
+              {this.state.markersObject.name}
+              <br />
+              {this.state.markersObject.isGate && <ToriiGate size={18} />}
             </PopupWrapper>
           </Popup>
         )}
