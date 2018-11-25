@@ -7,15 +7,15 @@ export default class BusStationsScreen extends React.Component {
         busNumber: "",
         stations: [
             {
-                name: "Kochłowice Rynek",
-                times: "12:32, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11",
+                name: "Stroszek Zajezdnia",
+                times: "3:27, 4:27, 4:52, 19:06, 20:06",
                 key: "1"
             },
-            { name: "Kochłowice Rynek", times: "12:32, 21:37, 9:11", key: "2" },
-            { name: "Kochłowice Rynek", times: "12:32, 21:37, 9:11", key: "3" },
-            { name: "Kochłowice Rynek", times: "12:32, 21:37, 9:11", key: "4" },
-            { name: "Kochłowice Rynek", times: "12:32, 21:37, 9:11", key: "5" },
-            { name: "Kochłowice Rynek", times: "12:32, 21:37, 9:11", key: "6" }
+            { name: "Dąbrowa Miejska Centrum Handlowe", times: "3:33, 4:33, 5:58, 19:14, 20:14", key: "2" },
+            { name: "Bytom Urząd Miasta", times: "3:42, 4:42, 5:07, 19:23, 20:23", key: "3" },
+            { name: "Chorzów Batory Dworzec PKP", times: "4:00, 5:00, 5:25, 19:41, 20:41", key: "4" },
+            { name: "Katowice Dworzec PKP", times: "4:32, 5:32, 5:57, 20:21, 21:12", key: "5" },
+            { name: "Zawodzie Zajezdnia", times: "5:00, 6:00, 6:23, 20:51, 21:48", key: "6" }
         ]
     };
 
