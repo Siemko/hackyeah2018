@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using Orlen.Common.Const;
 using Orlen.Common.Exceptions;
 using Orlen.Common.Extensions;
 using Orlen.Core;
@@ -37,7 +38,7 @@ namespace Orlen.Services.RouteService
             {
                 var section = new Section
                 {
-                    StartId = route.Points.ElementAt(i-1).Id,
+                    StartId = route.Points.ElementAt(i - 1).Id,
                     EndId = route.Points.ElementAt(i).Id
                 };
                 sections.Add(section);
@@ -54,31 +55,12 @@ namespace Orlen.Services.RouteService
             }).AsJContainer();
         }
 
-        private async Task<List<Point>> ValidateRoutes(List<Point> routes)
-        {
-            for (var i = 1; i < routes.Count; i++)
-            {
-                var routeExist =  await DataContext.Sections
-                    .AnyAsync(s => s.StartId == routes[i - 1].Id && s.EndId == routes[i].Id);
 
-                if (!routeExist)
-                {
-                    var result = await GetRoute(routes[i - 1].Id, routes[i].Id);
-                    routes.Remove(routes[i]);
-                    routes.InsertRange(i, result);
-                    i = 1;
-                }
-            }
-
-            return routes;
-        }
 
         public async Task Generate(GenerateRouteRequest request)
         {
 
-            var result = await GetRoute(request.StartPointId, request.EndPointId);
-
-            result = await ValidateRoutes(result);
+            var result = await GetRoute(request);
 
             result.Insert(0, new Point
             {
@@ -121,12 +103,16 @@ namespace Orlen.Services.RouteService
             await DataContext.SaveChangesAsync();
         }
 
-        private async Task<List<Point>> GetRoute(int startPointId, int endPointId)
+        private async Task<List<Point>> GetRoute(GenerateRouteRequest request)
         {
             var intersections = new List<Node>();
 
             var groups = await DataContext.Sections
-                //TODO: .Where wykluczenie nieczynnych na podstawie dancyh wejscicyjh
+                .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.MaxHeight && i.Value <= request.Height))
+                .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.MaxLength && i.Value <= request.Length))
+                .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.MaxWeight && i.Value <= request.Weight))
+                .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.MaxWidth && i.Value <= request.Width))
+                .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.Disabled))
                 .GroupBy(g => g.StartId)
                 .ToListAsync();
 
@@ -146,9 +132,9 @@ namespace Orlen.Services.RouteService
                 intersections.Add(node);
             }
 
-            var startPoint = await DataContext.Points.FirstOrDefaultAsync(p => p.Id == startPointId);
+            var startPoint = await DataContext.Points.FirstOrDefaultAsync(p => p.Id == request.StartPointId);
             if (startPoint == null)
-                throw new ResourceNotFoundException($"There is no point with id {startPointId}");
+                throw new ResourceNotFoundException($"There is no point with id {request.StartPointId}");
 
             var graph = new Graph(intersections, intersections.FindIndex(v => v.Id == startPoint.Id));
 
@@ -157,9 +143,9 @@ namespace Orlen.Services.RouteService
 
             var result = new List<Point>();
 
-            if (graph.Root.DistanceDict.ContainsKey(endPointId))
+            if (graph.Root.DistanceDict.ContainsKey(request.EndPointId))
             {
-                var pointsInRouteId = graph.Root.DistanceDict[endPointId].ToArray();
+                var pointsInRouteId = graph.Root.DistanceDict[request.EndPointId].ToArray();
                 var pointsInRoute = await DataContext.Points
                     .Where(p => pointsInRouteId.Contains(p.Id)).ToListAsync();
 
@@ -178,7 +164,9 @@ namespace Orlen.Services.RouteService
             var result = new List<Point>();
             for (var i = 1; i < request.Points.Count; i++)
             {
-                var route = await GetRoute(request.Points[i - 1], request.Points[i]);
+                var generateRouteRequest = new GenerateRouteRequest() { StartPointId = request.Points[i - 1], EndPointId = request.Points[i] };
+
+                var route = await GetRoute(generateRouteRequest);
                 result.AddRange(route);
             }
 
