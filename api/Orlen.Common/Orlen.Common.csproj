@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Const\IssueTypeName.cs" />
     <Compile Include="Exceptions\ErrorMessages.cs" />
     <Compile Include="Exceptions\InvalidParameterException.cs" />
     <Compile Include="Exceptions\ResourceDuplicatedException.cs" />
