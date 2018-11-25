@@ -9,6 +9,7 @@ import { ClimbingBoxLoader } from "react-spinners";
 import wretch from "wretch";
 import styled from "styled-components";
 import logo from "../logo.png";
+import IssueEditor from "./IssueEditor";
 
 const LoadingWrapper = styled.div`
   display: flex;
@@ -56,7 +57,7 @@ class Map extends PureComponent {
         start: points.find(x => x.id === section.startId),
         end: points.find(x => x.id === section.endId)
       }));
-      const route = await wretch("https://orlenapi.azurewebsites.net/Route/4")
+      const route = await wretch("https://orlenapi.azurewebsites.net/Route/13")
         .get()
         .json();
       this.setState({ points, sections, isLoading: false, route });
@@ -89,7 +90,7 @@ class Map extends PureComponent {
       features: [...better]
     };
 
-    const routeCoords = this.state.route.points.map(point => {
+    const routeCoords = this.state.route.route.points.map(point => {
       return [point.longitude, point.latitude];
     });
 
@@ -233,6 +234,12 @@ class Map extends PureComponent {
           >
             <PopupWrapper>
               {this.state.popupObject.object.geometry.properties.id}
+              <IssueEditor
+                id={this.state.popupObject.object.geometry.properties.id}
+                issues={
+                  this.state.popupObject.object.geometry.properties.issues
+                }
+              />
             </PopupWrapper>
           </Popup>
         )}
