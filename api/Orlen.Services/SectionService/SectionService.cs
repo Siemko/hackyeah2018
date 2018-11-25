@@ -75,12 +75,23 @@ namespace Orlen.Services.SectionService
             if (issueType == null)
                 throw new ResourceNotFoundException($"There is no issue type with id {request.IssueTypeId}");
 
+            var oppositeSection = await DataContext.Sections.FirstOrDefaultAsync(s => s.StartId == section.EndId && s.EndId == section.StartId);
+
             DataContext.Issues.Add(new Issue()
             {
                 IssueTypeId = request.IssueTypeId,
                 SectionId = request.SectionId,
                 Value = request.Value,
             });
+
+            if (oppositeSection != null)
+                DataContext.Issues.Add(new Issue()
+                {
+                    IssueTypeId = request.IssueTypeId,
+                    SectionId = oppositeSection.Id,
+                    Value = request.Value,
+                });
+
 
             await DataContext.SaveChangesAsync();
         }

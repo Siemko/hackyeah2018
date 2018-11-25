@@ -107,14 +107,19 @@ namespace Orlen.Services.RouteService
         {
             var intersections = new List<Node>();
 
-            var groups = await DataContext.Sections
+            var rr = await DataContext.Sections.Where(s => s.Issues.Any(i => i.IssueType.Name == IssueTypeName.Disabled)).ToListAsync();
+
+            var sections = (await DataContext.Sections
                 .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.MaxHeight && i.Value <= request.Height))
                 .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.MaxLength && i.Value <= request.Length))
                 .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.MaxWeight && i.Value <= request.Weight))
                 .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.MaxWidth && i.Value <= request.Width))
                 .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.Disabled))
-                .GroupBy(g => g.StartId)
-                .ToListAsync();
+                .ToListAsync());
+
+            var groups = sections
+                            .GroupBy(g => g.StartId)
+                            .ToList();
 
             foreach (var group in groups)
             {
