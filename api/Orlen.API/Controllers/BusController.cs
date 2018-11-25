@@ -18,5 +18,11 @@ namespace Orlen.API.Controllers
         {
             return await busService.Get();
         }
+
+        [HttpGet, Route("stops/{id}")]
+        public async Task<JContainer> GetBusStopes(int id)
+        {
+            return await busService.GetBusStopes(id);
+        }
     }
 }
