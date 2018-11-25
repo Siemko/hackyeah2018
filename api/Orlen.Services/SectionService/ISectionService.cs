@@ -10,6 +10,6 @@ namespace Orlen.Services.SectionService
         Task Add(AddSectionRequest request);
         Task AddIssue(AddSectionIssueRequest request);
         Task Delete(int id);
-        Task DeleteIssue(int issueId);
+        Task ClearIssues(int sectionId);
     }
 }

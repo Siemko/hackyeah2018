@@ -7,6 +7,7 @@ using Orlen.Common.Extensions;
 using Orlen.Core;
 using Orlen.Core.Entities;
 using Orlen.Services.RouteService.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -57,8 +58,17 @@ namespace Orlen.Services.RouteService
 
 
 
-        public async Task Generate(GenerateRouteRequest request)
+        public async Task<JContainer> Generate(GenerateRouteRequest request)
         {
+            request.StartPointId = await DataContext.Points
+                                .Where(p => p.Name.Equals(request.StartPointName, StringComparison.CurrentCultureIgnoreCase))
+                                .Select(p => p.Id)
+                                .FirstOrDefaultAsync();
+
+            request.EndPointId = await DataContext.Points
+                                 .Where(p => p.Name.Equals(request.EndPointName, StringComparison.CurrentCultureIgnoreCase))
+                                 .Select(p => p.Id)
+                                 .FirstOrDefaultAsync();
 
             var result = await GetRoute(request);
 
@@ -101,6 +111,10 @@ namespace Orlen.Services.RouteService
 
             DataContext.RoutePoints.AddRange(routePoints);
             await DataContext.SaveChangesAsync();
+            return new
+            {
+                route.Id
+            }.AsJContainer();
         }
 
         private async Task<List<Point>> GetRoute(GenerateRouteRequest request)
