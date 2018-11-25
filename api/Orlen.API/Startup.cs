@@ -78,7 +78,7 @@ namespace Orlen.API
 
             app.UseSwagger();
 
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "TakeShop API"); });
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Orlen Transportation Managment API"); });
 
             app.UseHttpsRedirection();
             app.UseMvc();

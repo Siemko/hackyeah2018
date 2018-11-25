@@ -106,11 +106,12 @@ namespace Orlen.Services.RouteService
 
             await DataContext.SaveChangesAsync();
 
-            var routePoints = result.Select(r => new RoutePoint()
+            var routePoints = result.Select(r => new RoutePoints()
             {
                 RouteId = route.Id,
                 PointId = r.Id
             });
+            DataContext.RoutePoints.AddRange(routePoints);
             await DataContext.SaveChangesAsync();
         }
 

@@ -16,13 +16,13 @@ namespace Orlen.Core
         public DbSet<Issue> Issues { get; set; }
         public DbSet<IssueType> IssueTypes { get; set; }
         public DbSet<Route> Routes { get; set; }
-        public DbSet<RoutePoint> RoutePoints { get; set; }
+        public DbSet<RoutePoints> RoutePoints { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<RoutePoint>().HasKey(t => new { t.RouteId, t.PointId });
-            modelBuilder.Entity<RoutePoint>().HasOne(bs => bs.Point).WithMany(b => b.RoutePoints).HasForeignKey(b => b.PointId);
-            modelBuilder.Entity<RoutePoint>().HasOne(bs => bs.Route).WithMany(b => b.RoutePoints).HasForeignKey(b => b.RouteId);
+            modelBuilder.Entity<RoutePoints>().HasKey(t => new { t.RouteId, t.PointId });
+            modelBuilder.Entity<RoutePoints>().HasOne(bs => bs.Point).WithMany(b => b.RoutePoints).HasForeignKey(b => b.PointId);
+            modelBuilder.Entity<RoutePoints>().HasOne(bs => bs.Route).WithMany(b => b.RoutePoints).HasForeignKey(b => b.RouteId);
 
             base.OnModelCreating(modelBuilder);
         }

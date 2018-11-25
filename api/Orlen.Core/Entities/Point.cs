@@ -13,6 +13,6 @@ namespace Orlen.Core.Entities
         public double Lon { get; set; }
         public bool IsGate { get; set; }
         public List<Issue> Issues { get; set; }
-        public List<RoutePoint> RoutePoints { get; set; }
+        public List<RoutePoints> RoutePoints { get; set; }
     }
 }
