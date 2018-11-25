@@ -8,9 +8,9 @@ namespace Orlen.Core.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         [Column(TypeName = "decimal(18, 6)")]
-        public double Lat { get; set; }
+        public double Latitude { get; set; }
         [Column(TypeName = "decimal(18, 6)")]
-        public double Lon { get; set; }
+        public double Longitude { get; set; }
         public bool IsGate { get; set; }
         public List<Issue> Issues { get; set; }
         public List<RoutePoints> RoutePoints { get; set; }

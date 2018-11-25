@@ -154,6 +154,10 @@
     <Compile Include="Migrations\20181125014009_PointRoute2.designer.cs">
       <DependentUpon>20181125014009_PointRoute2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20181125020720_FieldsRenamed.cs" />
+    <Compile Include="Migrations\20181125020720_FieldsRenamed.designer.cs">
+      <DependentUpon>20181125020720_FieldsRenamed.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\DataContextModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
