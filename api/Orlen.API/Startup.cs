@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Orlen.API.Authorization;
 using Orlen.API.Filters;
 using Orlen.Core;
+using Orlen.Services.BusService;
 using Orlen.Services.IssueTypeService;
 using Orlen.Services.PointService;
 using Orlen.Services.RouteService;
@@ -43,6 +44,8 @@ namespace Orlen.API
             services.AddScoped<IPointService, PointService>();
             services.AddScoped<IIssueTypeService, IssueTypeService>();
             services.AddScoped<IRouteService, RouteService>();
+            services.AddScoped<IBusService, BusService>();
+
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddOptions();

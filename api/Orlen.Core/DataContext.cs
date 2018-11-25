@@ -17,7 +17,9 @@ namespace Orlen.Core
         public DbSet<IssueType> IssueTypes { get; set; }
         public DbSet<Route> Routes { get; set; }
         public DbSet<RoutePoints> RoutePoints { get; set; }
-
+        public DbSet<Bus> Buses { get; set; }
+        public DbSet<BusStop> BusStops { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RoutePoints>().HasKey(t => new { t.RouteId, t.PointId });

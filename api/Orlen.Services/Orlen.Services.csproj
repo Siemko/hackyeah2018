@@ -174,6 +174,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseService.cs" />
+    <Compile Include="BusService\BusService.cs" />
+    <Compile Include="BusService\IBusService.cs" />
+    <Compile Include="BusService\Models\AddBusRequest.cs" />
     <Compile Include="IssueTypeService\IIssueTypeService.cs" />
     <Compile Include="IssueTypeService\IssueTypeService.cs" />
     <Compile Include="PointService\IPointService.cs" />

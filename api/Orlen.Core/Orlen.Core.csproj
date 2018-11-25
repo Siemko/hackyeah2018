@@ -126,6 +126,8 @@
   <ItemGroup>
     <Compile Include="DataContext.cs" />
     <Compile Include="DbInitializer.cs" />
+    <Compile Include="Entities\Bus.cs" />
+    <Compile Include="Entities\BusStop.cs" />
     <Compile Include="Entities\Issue.cs" />
     <Compile Include="Entities\IssueType.cs" />
     <Compile Include="Entities\Point.cs" />
@@ -165,6 +167,10 @@
     <Compile Include="Migrations\20181125031130_pointsOrder2.cs" />
     <Compile Include="Migrations\20181125031130_pointsOrder2.designer.cs">
       <DependentUpon>20181125031130_pointsOrder2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20181125034154_up3.cs" />
+    <Compile Include="Migrations\20181125034154_up3.designer.cs">
+      <DependentUpon>20181125034154_up3.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\DataContextModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
