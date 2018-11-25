@@ -19,15 +19,12 @@ namespace Orlen.Services.BusService
 
         public async Task Add(AddBusRequest request)
         {
-            //var stops = await DataContext.Points.Where(p => request.Stops.Contains(p.Id)).ToListAsync();
             DataContext.Add(new Bus()
             {
                 Name = request.Name,
-                RouteId = request.RouteId,
-                //Stops = stops.ToList()
+                Stops = request.Stops.ToList()
             });
             await DataContext.SaveChangesAsync();
-
         }
 
         public async Task<JContainer> Get()
@@ -35,8 +32,7 @@ namespace Orlen.Services.BusService
             return (await DataContext.Buses.Select(b => new
             {
                 b.Id,
-                b.Name,
-                b.RouteId
+                b.Name
             }).ToListAsync()).AsJContainer();
         }
 
