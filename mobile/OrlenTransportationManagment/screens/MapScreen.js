@@ -1,8 +1,10 @@
 import React from "react";
 import { Constants, Location, Permissions, MapView } from "expo";
+import { View } from "react-native";
 import { connect } from "react-redux";
 import Circle from "../node_modules/react-native-maps/lib/components/MapCircle";
 import Polyline from "../node_modules/react-native-maps/lib/components/MapPolyline";
+import RedButton from "../components/RedButton";
 
 class MapScreenn extends React.Component {
     state = {
@@ -15,7 +17,7 @@ class MapScreenn extends React.Component {
             latitude: 52.589333,
             longitude: 19.677518,
             latitudeDelta: 0.0,
-            longitudeDelta: 0.055
+            longitudeDelta: 0.015
         },
         autoCenter: true,
         points: [
@@ -37,12 +39,8 @@ class MapScreenn extends React.Component {
     async componentDidMount() {
         const { status } = await Permissions.askAsync(Permissions.LOCATION);
         this.setState({ permissionsGranded: status === "granted" });
-        this.getLocation();
-        Location.watchPositionAsync(
-            { enableHighAccuracy: true },
-            this.userLocationChange
-        );
-        const routeId = this.props.navigation.getParam("routeId", "0")
+        await this.getLocation();
+        const routeId = this.props.navigation.getParam("routeId", "0");
         this.props.getRoute(routeId);
     }
 
@@ -50,61 +48,65 @@ class MapScreenn extends React.Component {
         const location = await Location.getCurrentPositionAsync({
             enableHighAccuracy: true
         });
-
-        this.setState({
-            currentLocation: {
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude
-            }
-        });
+        this.userLocationChange(location);
         setTimeout(this.getLocation, 1000);
     };
 
     userLocationChange = position => {
         if (this.state.autoCenter) {
-            this.setState(prevState => ({
+            this.setState({
                 region: {
-                    latitudeDelta: 0.0,
-                    longitudeDelta: 0.055,
                     latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
+                    longitude: position.coords.longitude,
+                    latitudeDelta: 0.0,
+                    longitudeDelta: 0.015
                 }
-            }));
+            });
         }
-        console.log(position.coords.latitude);
-    };
-
-    onPanDrag = (coordinate, position) => {
-        console.log(coordinate, position);
     };
 
     render() {
         return (
-            <MapView
-                style={{ flex: 1 }}
-                showsMyLocationButton={true}
-                showsUserLocation={true}
-                followsUserLocation={true}
-                initialRegion={{
-                    latitude: this.state.region.latitude,
-                    longitude: this.state.region.longitude,
-                    latitudeDelta: 0.0,
-                    longitudeDelta: 0.055
-                }}>
-                <Polyline
-                    coordinates={this.props.route ? this.props.route.points : []}
-                    strokeColor="#000"
-                    strokeColors={[
-                        "#7F0000",
-                        "#00000000",
-                        "#B24112",
-                        "#E5845C",
-                        "#238C23",
-                        "#7F0000"
-                    ]}
-                    strokeWidth={3}
-                />
-            </MapView>
+            <View style={{ flex: 1 }}>
+                <MapView
+                    style={{ flex: 1 }}
+                    initialRegion={{
+                        latitude: this.state.region.latitude,
+                        longitude: this.state.region.longitude,
+                        latitudeDelta: 0.0,
+                        longitudeDelta: 0.015
+                    }}
+                    region={{
+                        latitude: this.state.region.latitude,
+                        longitude: this.state.region.longitude,
+                        latitudeDelta: 0.0,
+                        longitudeDelta: 0.015
+                    }}>
+                    <Circle
+                        center={{
+                            latitude: this.state.region.latitude,
+                            longitude: this.state.region.longitude
+                        }}
+                        radius={10}
+                        strokeWidth={5}
+                        fillColor="white"
+                        strokeColor="#0074d9"
+                    />
+                    <Polyline
+                        coordinates={
+                            this.props.route ? this.props.route.points : []
+                        }
+                        strokeColor="#2ecc40"
+                        strokeWidth={3}
+                    />
+                </MapView>
+                <View style={{ margin: 20 }}>
+                    <RedButton
+                        title="Wróć"
+                        onPress={() => this.props.navigation.goBack()}
+                    />
+                </View>
+            </View>
         );
     }
 }

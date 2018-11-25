@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, FlatList } from "react-native";
+import RedButton from "../components/RedButton";
 
 export default class BusStationsScreen extends React.Component {
     state = {
@@ -7,8 +8,7 @@ export default class BusStationsScreen extends React.Component {
         stations: [
             {
                 name: "Kochłowice Rynek",
-                times:
-                    "12:32, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11",
+                times: "12:32, 21:37, 9:11, 21:37, 9:11, 21:37, 9:11",
                 key: "1"
             },
             { name: "Kochłowice Rynek", times: "12:32, 21:37, 9:11", key: "2" },
@@ -70,6 +70,9 @@ export default class BusStationsScreen extends React.Component {
                     data={this.state.stations}
                     renderItem={({ item }) => this.renderRow(item)}
                 />
+                <View style={{ margin: 20 }}>
+                <RedButton title="Wróć" onPress={() => this.props.navigation.goBack()} />
+                </View>
             </View>
         );
     }
