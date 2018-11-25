@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import MapGL, { Marker, StaticMap, Popup } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MAPBOX_TOKEN } from "../utils/constants";
-import { Circle, ExclamationTriangle } from "styled-icons/fa-solid";
+import { Circle, ExclamationTriangle, ToriiGate } from "styled-icons/fa-solid";
 import { Smile } from "styled-icons/fa-regular";
 import DeckGL, { GeoJsonLayer } from "deck.gl";
 import { ClimbingBoxLoader } from "react-spinners";
@@ -129,7 +129,7 @@ class Bus extends PureComponent {
             features: [...better]
         };
 
-        const routeCoords = this.state.route.points.map(point => {
+        const routeCoords = this.state.route.route.points.map(point => {
             return [point.longitude, point.latitude];
         });
 
@@ -275,7 +275,12 @@ class Bus extends PureComponent {
                                         this.setState({ showTooltip: true, tooltipObject: toolObj });
                                     }}
                                     onClick={() => {
-                                        this.setState({ showMarkers: true, markersObject: point, showTooltip: false, tooltipObject: null })
+                                        this.setState({
+                                            showMarkers: true,
+                                            markersObject: point,
+                                            showTooltip: false,
+                                            tooltipObject: null
+                                        });
                                     }}
                                 />
                             </Marker>
@@ -309,9 +314,9 @@ class Bus extends PureComponent {
                             }
                         >
                             <PopupWrapper>
-                                <h4 className="text-center">Punkt {this.state.markersObject.name}</h4>
-                                <h4 className="text-center">Id {this.state.markersObject.id}</h4>
+                                <h4 className="text-center">{this.state.markersObject.name}</h4>
                                 <AddBusStop onClick={this.addBusStop}>Dodaj przystanek</AddBusStop>
+                                {this.state.markersObject.isGate && <ToriiGate size={18} />}
                             </PopupWrapper>
                         </Popup>
                     )}

@@ -15,6 +15,7 @@ namespace Orlen.Core
                 db.IssueTypes.Add(new IssueType() { Name = "MaxWidth" });
                 db.IssueTypes.Add(new IssueType() { Name = "MaxLength", });
                 db.IssueTypes.Add(new IssueType() { Name = "MaxWeight" });
+                db.IssueTypes.Add(new IssueType() { Name = "Disabled" });                
                 db.SaveChanges();
             }
 

@@ -27,7 +27,7 @@ namespace Orlen.Services.RouteService.Models
                         if (intersectionNode.Id == neighbor.Key)
                         {
                             newNeightbor.Node = intersectionNode;
-                            newNeightbor.Distance = neighbor.Value.Count;
+                            newNeightbor.Distance = 1 + neighbor.Value.Count;
                             intersection.Neighbors.Add(newNeightbor);
                             break;
                         }

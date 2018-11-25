@@ -2,6 +2,8 @@
 {
     public class GenerateRouteRequest
     {
+        public string StartPointName { get; set; }
+        public string EndPointName { get; set; }
         public int StartPointId { get; set; }
         public int EndPointId { get; set; }
         public decimal Weight { get; set; }

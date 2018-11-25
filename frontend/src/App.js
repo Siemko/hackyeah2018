@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import MapView from "./views/MapView";
 import BusView from "./views/BusView";
 import { Router, Route, Switch, Redirect } from "react-router-dom";
@@ -31,7 +31,7 @@ const Nav = styled.nav`
     }
   }
 `
-class App extends Component {
+class App extends PureComponent {
   render() {
     return (
       <>
