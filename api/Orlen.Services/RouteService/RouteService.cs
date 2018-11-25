@@ -29,7 +29,7 @@ namespace Orlen.Services.RouteService
                     r.Width,
                     r.Height,
                     r.Weight,
-                    Points = r.RoutePoints.Select(rp => rp.Point)
+                    Points = r.RoutePoints.OrderBy(o => o.Order).Select(rp => rp.Point)
                 }).FirstOrDefaultAsync();
 
             var sections = new List<Section>();
@@ -104,12 +104,18 @@ namespace Orlen.Services.RouteService
 
             await DataContext.SaveChangesAsync();
 
-            var routePoints = result.Select(r => new RoutePoints()
+            var routePoints = new List<RoutePoints>();
+            var counter = 0;
+            foreach (var r in result)
             {
-                RouteId = route.Id,
-                PointId = r.Id
-            }).ToList();
+                routePoints.Add(new RoutePoints
+                {
 
+                    RouteId = route.Id,
+                    PointId = r.Id,
+                    Order = counter++
+                });
+            }
 
             DataContext.RoutePoints.AddRange(routePoints);
             await DataContext.SaveChangesAsync();
