@@ -29,7 +29,8 @@ namespace Orlen.Services.SectionService
                 Issues = s.Issues.Select(i => new
                 {
                     i.IssueType.Name,
-                    i.Value
+                    i.Value,
+                    i.IssueTypeId
                 })
             }).ToListAsync();
 
