@@ -11,5 +11,6 @@ namespace Orlen.Services.RouteService
         Task<JContainer> Get(int id);
         Task<JContainer> Generate(GenerateRouteRequest request);
         Task<JContainer> GenerateRouteFromPoints(GenerateRouteFromPointsRequest request);
+        Task<JContainer> GetBusRoute(int busId);
     }
 }

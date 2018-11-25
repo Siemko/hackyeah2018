@@ -14,6 +14,7 @@ namespace Orlen.API.Controllers
         {
             this.busService = busService;
         }
+
         [HttpGet]
         public async Task<JContainer> Get()
         {
@@ -26,10 +27,10 @@ namespace Orlen.API.Controllers
             return await busService.GetBusStopes(id);
         }
 
-        //[HttpPost]
-        //public async Task<JContainer> BusRoute([FromBody] AddBusRequest request)
-        //{
-        //    return await busService.Add(request);
-        //}
+        [HttpPost]
+        public async Task GetBusStopes([FromBody] AddBusRequest request)
+        {
+            await busService.Add(request);
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Orlen.Common.Exceptions;
@@ -19,11 +20,25 @@ namespace Orlen.Services.BusService
 
         public async Task Add(AddBusRequest request)
         {
-            DataContext.Add(new Bus()
+            var bus = new Bus()
             {
                 Name = request.Name,
-                Stops = request.Stops.ToList()
-            });
+                Stops = new List<BusStop>(),
+                RouteId = DataContext.Routes.First().Id
+            };
+
+            var stops = new List<BusStop>();
+            foreach (var stop in request.Stops)
+            {
+                bus.Stops.Add(new BusStop
+                {
+                    Name = stop.Name,
+                    PointId = stop.PointId
+                });
+            }
+
+            await DataContext.AddAsync(bus);
+
             await DataContext.SaveChangesAsync();
         }
 
@@ -39,7 +54,8 @@ namespace Orlen.Services.BusService
 
         public async Task<JContainer> GetBusStopes(int busId)
         {
-            return (await DataContext.BusStops.FirstOrDefaultAsync(v => v.BusId == busId)).AsJContainer();
+            var bus = await DataContext.BusStops.Where(v => v.BusId == busId).ToListAsync();
+            return bus.AsJContainer();
         }
     }
 }

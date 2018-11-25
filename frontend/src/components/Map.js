@@ -145,7 +145,12 @@ class Map extends PureComponent {
           });
         },
         getLineColor: f => {
-          if (f.geometry.properties.issues.length > 0) return [255, 220, 0];
+          const t = f.geometry.properties.issues.find(i => i.issueTypeId == 5);
+          console.log(f.geometry.properties.issues);
+          if (t) {
+            return [255, 65, 54];
+          } else if (f.geometry.properties.issues.length > 0)
+            return [255, 220, 0];
           else if (!f.geometry.properties.issues.length) return [46, 204, 64];
         }
       }),
@@ -283,9 +288,14 @@ class Map extends PureComponent {
               {this.state.tooltipObject.issues.length === 0 && (
                 <Smile color="#2ECC40" size={24} />
               )}
-              {this.state.tooltipObject.issues.length > 0 && (
-                <ExclamationTriangle color="#FFDC00" size={24} />
-              )}
+              {this.state.tooltipObject.issues.length > 0 &&
+                this.state.tooltipObject.issues.find(
+                  i => i.issueTypeId == 5
+                ) === undefined && (
+                  <ExclamationTriangle color="#FFDC00" size={24} />
+                )}
+              {this.state.tooltipObject.issues.find(i => i.issueTypeId == 5) !==
+                undefined && <ExclamationTriangle color="#FF4136" size={24} />}
             </div>
           </Popup>
         )}
