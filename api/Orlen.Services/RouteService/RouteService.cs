@@ -44,6 +44,36 @@ namespace Orlen.Services.RouteService
 
         public async Task Generate(GenerateRouteRequest request)
         {
+
+            var result = await GetRoute(request.StartPointId, request.EndPointId);
+
+            if (result.Count() <= 1)
+                throw new InvalidParameterException("Ilość wygenerowanych punktów mniejsza lub równa 1. Trasa nie wygenerowna");
+
+            var route = new Route()
+            {
+                Weight = request.Weight,
+                Height = request.Height,
+                Length = request.Length,
+                Width = request.Width,
+            };
+            DataContext.Routes.Add(route);
+
+            await DataContext.SaveChangesAsync();
+
+            var routePoints = result.Select(r => new RoutePoints()
+            {
+                RouteId = route.Id,
+                PointId = r.Id,
+                Order = r.Order
+            }).ToList();
+
+            DataContext.RoutePoints.AddRange(routePoints);
+            await DataContext.SaveChangesAsync();
+        }
+
+        private async Task<List<GeneratedPointModel>> GetRoute(int startPointId, int endPointId)
+        {
             var intersections = new List<Node>();
 
             var groups = await DataContext.Sections
@@ -67,55 +97,51 @@ namespace Orlen.Services.RouteService
                 intersections.Add(node);
             }
 
-            var startPoint = await DataContext.Points.FirstOrDefaultAsync(p => p.Id == request.StartPointId);
+            var startPoint = await DataContext.Points.FirstOrDefaultAsync(p => p.Id == startPointId);
             if (startPoint == null)
-                throw new ResourceNotFoundException($"There is no point with id {request.StartPointId}");
+                throw new ResourceNotFoundException($"There is no point with id {startPointId}");
 
             var graph = new Graph(intersections, intersections.FindIndex(v => v.Id == startPoint.Id));
 
             graph.InitializeNeighbors();
             graph.TransverNode(graph.Root);
 
-            var result = new List<Point>();
+            var result = new List<GeneratedPointModel>();
 
-            if (graph.Root.DistanceDict.ContainsKey(request.EndPointId))
+            if (graph.Root.DistanceDict.ContainsKey(endPointId))
             {
-                var pointsInRouteId = graph.Root.DistanceDict[request.EndPointId].ToArray();
+                var pointsInRouteId = graph.Root.DistanceDict[endPointId].ToArray();
                 var pointsInRoute = await DataContext.Points
                     .Where(p => pointsInRouteId.Contains(p.Id)).ToListAsync();
 
+                var counter = 0;
                 foreach (var pointId in pointsInRouteId)
                 {
+                    counter++;
                     var point = pointsInRoute.First(pir => pir.Id == pointId);
-                    result.Add(new Point
+                    result.Add(new GeneratedPointModel
                     {
                         Id = point.Id,
                         Latitude = point.Latitude,
-                        Longitude = point.Longitude
+                        Longitude = point.Longitude,
+                        Order = counter
                     });
                 }
             }
-            if (result.Count() <= 1)
-                throw new InvalidParameterException("Ilość wygenerowanych punktów mniejsza lub równa 1. Trasa nie wygenerowna");
 
-            var route = new Route()
+            return result;
+        }
+
+        public async Task<JContainer> GenerateRouteFromPoints(GenerateRouteFromPointsRequest request)
+        {
+            var result = new List<GeneratedPointModel>();
+            for (var i = 1; i < request.Points.Count; i++)
             {
-                Weight = request.Weight,
-                Height = request.Height,
-                Length = request.Length,
-                Width = request.Width,
-            };
-            DataContext.Routes.Add(route);
+                var route = await GetRoute(request.Points[i - 1], request.Points[i]);
+                result.AddRange(route);
+            }
 
-            await DataContext.SaveChangesAsync();
-
-            var routePoints = result.Select(r => new RoutePoints()
-            {
-                RouteId = route.Id,
-                PointId = r.Id
-            }).ToList();
-            DataContext.RoutePoints.AddRange(routePoints);
-            await DataContext.SaveChangesAsync();
+            return result.AsJContainer();
         }
     }
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Orlen.Core;
 
 namespace Orlen.Core.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20181125030540_pointsOrder")]
+    partial class pointsOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,6 +78,8 @@ namespace Orlen.Core.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<int>("Order");
+
                     b.HasKey("Id");
 
                     b.ToTable("Points");
@@ -118,8 +122,6 @@ namespace Orlen.Core.Migrations
                     b.Property<int>("RouteId");
 
                     b.Property<int>("PointId");
-
-                    b.Property<int>("Order");
 
                     b.HasKey("RouteId", "PointId");
 

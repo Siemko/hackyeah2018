@@ -15,7 +15,7 @@ namespace Orlen.API.Controllers
             this.pointService = pointService;
         }
 
-        [HttpGet, ResponseCache(Duration = int.MaxValue)]
+        [HttpGet]
         public async Task<JContainer> Get()
         {
             return await pointService.GetAll();

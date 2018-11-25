@@ -1,6 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 using Orlen.Services.RouteService.Models;
 using System.Threading.Tasks;
+using Orlen.Core.Entities;
 
 namespace Orlen.Services.RouteService
 {
@@ -8,5 +10,6 @@ namespace Orlen.Services.RouteService
     {
         Task<JContainer> Get(int id);
         Task Generate(GenerateRouteRequest request);
+        Task<JContainer> GenerateRouteFromPoints(GenerateRouteFromPointsRequest request);
     }
 }
