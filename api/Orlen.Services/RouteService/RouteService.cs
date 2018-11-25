@@ -166,8 +166,8 @@ namespace Orlen.Services.RouteService
                     result.Add(new Point
                     {
                         Id = point.Id,
-                        Lat = point.Lat,
-                        Lon = point.Lon
+                        Latitude = point.Latitude,
+                        Longitude = point.Longitude
                     });
                 }
             }
@@ -175,7 +175,7 @@ namespace Orlen.Services.RouteService
             return result;
         }
 
-        public async Task<List<RoutePoint>> GenerateRouteFromPoints(GenerateRouteFromPointsRequest request)
+        public async Task<List<Point>> GenerateRouteFromPoints(GenerateRouteFromPointsRequest request)
         {
             var result = new List<Point>();
             for (var i = 1; i < request.Points.Count; i++)
@@ -184,11 +184,7 @@ namespace Orlen.Services.RouteService
                 result.AddRange(route);
             }
 
-            return result.Select(r => new RoutePoint()
-            {
-                RouteId = route.Id,
-                PointId = r.Id
-            });
+            return result;
         }
     }
 }
