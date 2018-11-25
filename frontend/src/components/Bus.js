@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import MapGL, { Marker, StaticMap, Popup } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MAPBOX_TOKEN } from "../utils/constants";
@@ -32,10 +32,13 @@ const BusList = styled.div`
     width: 300px;
     background-color: #fff;
     z-index: 99999;
+    padding: 15px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 `
 
 const BusItem = styled.div`
-    padding: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
 `
 
 const NewBus = styled.div`
@@ -62,12 +65,12 @@ const AddBusStop = styled.div`
     cursor: pointer;
 `
 
-class Bus extends Component {
+class Bus extends PureComponent {
     state = {
         viewport: {
             latitude: 52.589333,
             longitude: 19.677518,
-            zoom: 14
+            zoom: 14,
         },
         points: null,
         sections: null,
@@ -215,6 +218,7 @@ class Bus extends Component {
         return (
             <>
                 <BusList>
+                    <h2>Linie busów:</h2>
                     {this.state.busList.map((bus, index) => {
                         return (
                             <BusItem key={index}>
@@ -306,6 +310,7 @@ class Bus extends Component {
                         >
                             <PopupWrapper>
                                 <h4 className="text-center">Punkt {this.state.markersObject.name}</h4>
+                                <h4 className="text-center">Id {this.state.markersObject.id}</h4>
                                 <AddBusStop onClick={this.addBusStop}>Dodaj przystanek</AddBusStop>
                             </PopupWrapper>
                         </Popup>
