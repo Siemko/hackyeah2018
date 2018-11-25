@@ -67,6 +67,9 @@ namespace Orlen.Services.SectionService
 
         public async Task AddIssue(AddSectionIssueRequest request)
         {
+            if (await DataContext.Issues.AnyAsync(i => i.IssueTypeId == request.IssueTypeId && i.SectionId == request.SectionId))
+                return;
+
             var section = await DataContext.Sections.FirstOrDefaultAsync(p => p.Id == request.SectionId);
             if (section == null)
                 throw new ResourceNotFoundException($"There is no point with id {request.SectionId}");
@@ -75,12 +78,22 @@ namespace Orlen.Services.SectionService
             if (issueType == null)
                 throw new ResourceNotFoundException($"There is no issue type with id {request.IssueTypeId}");
 
+            var oppositeSection = await DataContext.Sections.FirstOrDefaultAsync(s => s.StartId == section.EndId && s.EndId == section.StartId);
             DataContext.Issues.Add(new Issue()
             {
                 IssueTypeId = request.IssueTypeId,
                 SectionId = request.SectionId,
                 Value = request.Value,
             });
+
+            if (oppositeSection != null)
+                DataContext.Issues.Add(new Issue()
+                {
+                    IssueTypeId = request.IssueTypeId,
+                    SectionId = oppositeSection.Id,
+                    Value = request.Value,
+                });
+
 
             await DataContext.SaveChangesAsync();
         }
