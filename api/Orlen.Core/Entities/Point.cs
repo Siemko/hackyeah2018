@@ -11,7 +11,6 @@ namespace Orlen.Core.Entities
         public double Latitude { get; set; }
         [Column(TypeName = "decimal(18, 6)")]
         public double Longitude { get; set; }
-        public int Order { get; set; }
         public bool IsGate { get; set; }
         public List<Issue> Issues { get; set; }
         public List<RoutePoints> RoutePoints { get; set; }

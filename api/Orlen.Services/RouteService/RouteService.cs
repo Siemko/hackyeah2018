@@ -29,7 +29,7 @@ namespace Orlen.Services.RouteService
                     r.Width,
                     r.Height,
                     r.Weight,
-                    Points = r.RoutePoints.Select(rp => rp.Point).OrderBy(p => p.Order).Select(p => new
+                    Points = r.RoutePoints.Select(rp => rp.Point).Select(p => new
                     {
                         p.Latitude,
                         p.Longitude
@@ -64,13 +64,15 @@ namespace Orlen.Services.RouteService
             var routePoints = result.Select(r => new RoutePoints()
             {
                 RouteId = route.Id,
-                PointId = r.Id
+                PointId = r.Id,
+                Order = r.Order
             }).ToList();
+
             DataContext.RoutePoints.AddRange(routePoints);
             await DataContext.SaveChangesAsync();
         }
 
-        private async Task<List<Point>> GetRoute(int startPointId, int endPointId)
+        private async Task<List<GeneratedPointModel>> GetRoute(int startPointId, int endPointId)
         {
             var intersections = new List<Node>();
 
@@ -104,7 +106,7 @@ namespace Orlen.Services.RouteService
             graph.InitializeNeighbors();
             graph.TransverNode(graph.Root);
 
-            var result = new List<Point>();
+            var result = new List<GeneratedPointModel>();
 
             if (graph.Root.DistanceDict.ContainsKey(endPointId))
             {
@@ -112,12 +114,12 @@ namespace Orlen.Services.RouteService
                 var pointsInRoute = await DataContext.Points
                     .Where(p => pointsInRouteId.Contains(p.Id)).ToListAsync();
 
-                int counter = 0;
+                var counter = 0;
                 foreach (var pointId in pointsInRouteId)
                 {
                     counter++;
                     var point = pointsInRoute.First(pir => pir.Id == pointId);
-                    result.Add(new Point
+                    result.Add(new GeneratedPointModel
                     {
                         Id = point.Id,
                         Latitude = point.Latitude,
@@ -130,9 +132,9 @@ namespace Orlen.Services.RouteService
             return result;
         }
 
-        public async Task<List<Point>> GenerateRouteFromPoints(GenerateRouteFromPointsRequest request)
+        public async Task<List<GeneratedPointModel>> GenerateRouteFromPoints(GenerateRouteFromPointsRequest request)
         {
-            var result = new List<Point>();
+            var result = new List<GeneratedPointModel>();
             for (var i = 1; i < request.Points.Count; i++)
             {
                 var route = await GetRoute(request.Points[i - 1], request.Points[i]);
