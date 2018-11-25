@@ -37,7 +37,8 @@ class Map extends Component {
     showPopup: false,
     popupObject: null,
     showTooltip: false,
-    tooltipObject: null
+    tooltipObject: null,
+    route: null
   };
 
   async componentDidMount() {
@@ -45,12 +46,20 @@ class Map extends Component {
       const points = await wretch("https://orlenapi.azurewebsites.net/Point")
         .get()
         .json();
-      const sections = await wretch(
-        "https://orlenapi.azurewebsites.net/Section"
-      )
+      let sections = await wretch("https://orlenapi.azurewebsites.net/Section")
         .get()
         .json();
-      this.setState({ points, sections, isLoading: false });
+      console.log(points);
+      sections = sections.map(section => ({
+        ...section,
+        start: points.find(x => x.id === section.startId),
+        end: points.find(x => x.id === section.endId)
+      }));
+      console.log(sections);
+      const route = await wretch("https://orlenapi.azurewebsites.net/Route/1")
+        .get()
+        .json();
+      this.setState({ points, sections, isLoading: false, route });
     } catch (error) {
       this.setState({ isLoading: false, hasError: true });
     }
@@ -63,8 +72,8 @@ class Map extends Component {
         geometry: {
           type: "LineString",
           coordinates: [
-            [section.start.lon, section.start.lat],
-            [section.end.lon, section.end.lat]
+            [section.start.longitude, section.start.latitude],
+            [section.end.longitude, section.end.latitude]
           ],
           properties: {
             id: section.id,
@@ -79,6 +88,22 @@ class Map extends Component {
       type: "FeatureCollection",
       features: [...better]
     };
+
+    const better2 = this.state.route.points.map(point => {
+      return {
+        type: "Feature",
+        geometry: {
+          type: "LineString",
+          coordinates: [point.longitude, point.latitude]
+        }
+      };
+    });
+
+    const route = {
+      type: "FeatureCollection",
+      features: [...better2]
+    };
+
     return [
       new GeoJsonLayer({
         id: "geojson",
@@ -92,11 +117,21 @@ class Map extends Component {
         },
         pickable: true,
         onHover: info => {
-          if (info.picked && !this.state.showPopup)
-            this.setState({ showTooltip: true, tooltipObject: info });
-          else this.setState({ showTooltip: false, tooltipObject: null });
+          if (info.picked && !this.state.showPopup) {
+            const toolObj = {
+              lat: info.lngLat[1],
+              lon: info.lngLat[0],
+              issues: info.object.geometry.properties.issues
+            };
+            this.setState({ showTooltip: true, tooltipObject: toolObj });
+          } else this.setState({ showTooltip: false, tooltipObject: null });
         },
         onClick: info => {
+          const toolObj = {
+            lat: info.lngLat[1],
+            lon: info.lngLat[0],
+            issues: info.object.geometry.properties.issues
+          };
           this.setState({
             showPopup: true,
             popupObject: info,
@@ -108,7 +143,22 @@ class Map extends Component {
           if (f.geometry.properties.issues.length > 0) return [255, 220, 0];
           else if (!f.geometry.properties.issues.length) return [46, 204, 64];
         }
-      })
+      }),
+
+    //   new GeoJsonLayer({
+    //     id: "geojson",
+    //     data: route,
+    //     opacity: 1,
+    //     stroked: false,
+    //     filled: true,
+    //     lineWidthMinPixels: 5,
+    //     parameters: {
+    //       depthTest: false
+    //     },
+    //     getLineColor: () => {
+    //         return [1, 1, 1]
+    //     }
+    //   })
     ];
   };
 
@@ -144,12 +194,16 @@ class Map extends Component {
           return (
             <Marker
               key={point.id}
-              latitude={point.lat}
-              longitude={point.lon}
+              latitude={point.latitude}
+              longitude={point.longitude}
               offsetLeft={-10}
               offsetTop={-10}
             >
-              <Circle color="#fff" size="20" />
+              <Circle
+                color="#fff"
+                size="20"
+                onClick={() => console.log(point)}
+              />
             </Marker>
           );
         })}
@@ -172,8 +226,8 @@ class Map extends Component {
         )}
         {this.state.showTooltip && (
           <Popup
-            latitude={this.state.tooltipObject.lngLat[1]}
-            longitude={this.state.tooltipObject.lngLat[0]}
+            latitude={this.state.tooltipObject.lat}
+            longitude={this.state.tooltipObject.lon}
             closeButton={false}
             closeOnClick={true}
             anchor="top"
@@ -182,10 +236,12 @@ class Map extends Component {
             }
           >
             <div>
-              {this.state.tooltipObject.object.geometry.properties.issues
-                .length === 0 && <Smile color="#2ECC40" size={24} />}
-              {this.state.tooltipObject.object.geometry.properties.issues
-                .length > 0 && <ExclamationTriangle color="#FFDC00" size={24} />}
+              {this.state.tooltipObject.issues.length === 0 && (
+                <Smile color="#2ECC40" size={24} />
+              )}
+              {this.state.tooltipObject.issues.length > 0 && (
+                <ExclamationTriangle color="#FFDC00" size={24} />
+              )}
             </div>
           </Popup>
         )}
