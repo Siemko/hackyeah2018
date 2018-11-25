@@ -35,10 +35,10 @@ namespace Orlen.API.Controllers
         {
             await sectionService.Delete(id);
         }
-        [HttpDelete, Route("issue/{id}")]
-        public async Task DeleteIssue(int issueId)
+        [HttpDelete, Route("clear-issues/{sectionId}")]
+        public async Task ClearIssues(int sectionId)
         {
-            await sectionService.DeleteIssue(issueId);
+            await sectionService.ClearIssues(sectionId);
         }
     }
 }

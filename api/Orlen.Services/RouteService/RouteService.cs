@@ -57,7 +57,7 @@ namespace Orlen.Services.RouteService
 
 
 
-        public async Task Generate(GenerateRouteRequest request)
+        public async Task<JContainer> Generate(GenerateRouteRequest request)
         {
 
             var result = await GetRoute(request);
@@ -101,6 +101,10 @@ namespace Orlen.Services.RouteService
 
             DataContext.RoutePoints.AddRange(routePoints);
             await DataContext.SaveChangesAsync();
+            return new
+            {
+                route.Id
+            }.AsJContainer();
         }
 
         private async Task<List<Point>> GetRoute(GenerateRouteRequest request)
