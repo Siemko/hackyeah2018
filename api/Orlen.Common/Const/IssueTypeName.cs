@@ -6,5 +6,6 @@
         public static string MaxWidth = "MaxWidth";
         public static string MaxLength = "MaxLength";
         public static string MaxWeight = "MaxWeight";
+        public static string Disabled = "Disabled";
     }
 }

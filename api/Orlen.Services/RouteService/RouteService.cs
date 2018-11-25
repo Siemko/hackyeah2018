@@ -112,6 +112,7 @@ namespace Orlen.Services.RouteService
                 .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.MaxLength && i.Value <= request.Length))
                 .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.MaxWeight && i.Value <= request.Weight))
                 .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.MaxWidth && i.Value <= request.Width))
+                .Where(s => !s.Issues.Any(i => i.IssueType.Name == IssueTypeName.Disabled))
                 .GroupBy(g => g.StartId)
                 .ToListAsync();
 
