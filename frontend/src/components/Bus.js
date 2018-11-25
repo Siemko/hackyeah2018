@@ -233,7 +233,7 @@ class Bus extends PureComponent {
                             <BusItem
                                 key={index}
                                 onClick={() => {
-                                    location.href = `http://localhost:3000/bus/${bus.routeId}`; //eslint-disable-line
+                                    location.href = `https://orlentransport.netlify.com/bus/${bus.routeId}`; //eslint-disable-line
                                 }}
                             >
                                 <h5>{bus.name}</h5>

@@ -55,7 +55,7 @@ class RouteGeneratorModal extends React.Component {
               )
                 .post(this.state)
                 .json();
-              location.href = `http://localhost:3000/map/${res.id}`; //eslint-disable-line
+              location.href = `https://orlentransport.netlify.com/map/${res.id}`; //eslint-disable-line
             }}
           >
             <ModalBody>
