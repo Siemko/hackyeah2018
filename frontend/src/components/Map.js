@@ -57,7 +57,7 @@ class Map extends PureComponent {
         start: points.find(x => x.id === section.startId),
         end: points.find(x => x.id === section.endId)
       }));
-      const route = await wretch("https://orlenapi.azurewebsites.net/Route/13")
+      const route = await wretch("https://orlenapi.azurewebsites.net/Route/15")
         .get()
         .json();
       this.setState({ points, sections, isLoading: false, route });
