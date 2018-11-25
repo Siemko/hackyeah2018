@@ -40,6 +40,9 @@ const BusList = styled.div`
 const BusItem = styled.div`
   padding-top: 15px;
   padding-bottom: 15px;
+  cursor: pointer;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
 `;
 
 const NewBus = styled.div`
@@ -66,6 +69,18 @@ const AddBusStop = styled.div`
   cursor: pointer;
 `;
 
+const NewBusLane = styled.div`
+    position: absolute;
+  left: 15px;
+  top: 15px;
+  bottom: 15px;
+  width: 300px;
+  background-color: #fff;
+  z-index: 999999;
+  padding: 15px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+`
+
 class Bus extends PureComponent {
     state = {
         viewport: {
@@ -81,7 +96,12 @@ class Bus extends PureComponent {
         showTooltip: false,
         tooltipObject: null,
         busList: [],
-        busStopList: []
+        busStopList: {
+            route: {
+                points: []
+            }
+        },
+        newBusLaneActive: false
     };
 
     async componentDidMount() {
@@ -97,17 +117,48 @@ class Bus extends PureComponent {
                 start: points.find(x => x.id === section.startId),
                 end: points.find(x => x.id === section.endId)
             }));
-            const route = await wretch(
-                `https://orlenapi.azurewebsites.net/Route/${
-                this.props.match.params.id ? this.props.match.params.id : 1
-                }`
-            )
-                .get()
-                .json();
+
+            let busStopList = {
+                route: {
+                    points: []
+                }
+            }
+            let route = null
+
+            const id = this.props.match.params.id ? this.props.match.params.id : 1
+
+            if (id !== 1) {
+                const busRoute = await wretch(
+                    `https://orlenapi.azurewebsites.net/Route/bus-route/${id}`
+                )
+                    .get()
+                    .json();
+                route = {
+                    route: {
+                        points: busRoute
+                    }
+                }
+                const busStops = await wretch(`https://orlenapi.azurewebsites.net/Bus/stops/${id}`)
+                    .get()
+                    .json(); 
+
+                busStopList = {
+                    route: {
+                        points: busStops
+                    }
+                }
+            }
+            else {
+                route = await wretch(
+                    `https://orlenapi.azurewebsites.net/Route/${id}`
+                )
+                    .get()
+                    .json();
+            }
             const busList = await wretch("https://orlenapi.azurewebsites.net/Bus")
                 .get()
                 .json();
-            this.setState({ points, sections, busList, isLoading: false, route });
+            this.setState({ points, sections, busList, busStopList, isLoading: false, route });
         } catch (error) {
             console.log(error)
             this.setState({ isLoading: false, hasError: true });
@@ -138,7 +189,7 @@ class Bus extends PureComponent {
             features: [...better]
         };
 
-        const routeCoords = this.state.route.route.points.map(point => {
+        const routeCoords = this.state.route && this.state.route.route.points.map(point => {
             return [point.longitude, point.latitude];
         });
 
@@ -209,11 +260,55 @@ class Bus extends PureComponent {
     };
 
     addBusStop = () => {
-        console.log(this.state.markersObject);
         this.setState(prevState => ({
-            busStopList: [...prevState.busStopList, prevState.markersObject]
+            busStopList: {...prevState.busStopList, 
+                route: {
+                    points: [...prevState.busStopList.route.points, prevState.markersObject]
+                }
+            }
         }));
     };
+
+    getCircleColor = (point) => {
+        if (this.state.busStopList.route.points.filter(b => b.pointId === point.id).length) {
+            return '#212121';
+        } else {
+            return '#fff';
+        }
+    }
+
+    openNewBusLane = () => {
+        this.setState(prevState => ({
+            newBusLaneActive: true,
+            busStopList: {...prevState.busStopList, 
+                route: {
+                    points: []
+                }
+            }
+        }))
+    }
+
+    updateInputValue(evt) {
+        this.setState({
+            newBusLaneName: evt.target.value
+        });
+    }
+
+    addNewBusLane = () => {
+        const newBusLane = {
+            name: this.state.newBusLaneName,
+            stops: this.state.busStopList.route.points.map(p => { return { pointId: p.id } })
+        }
+        console.log(newBusLane)
+        wretch(
+            `https://orlenapi.azurewebsites.net/Bus/`
+          )
+            .post(
+                newBusLane
+            )
+
+        // location.href = `http://localhost:3000/bus/`; //eslint-disable-line
+    }
 
     render() {
         if (this.state.isLoading)
@@ -233,22 +328,37 @@ class Bus extends PureComponent {
                             <BusItem
                                 key={index}
                                 onClick={() => {
-                                    location.href = `https://orlentransport.netlify.com/bus/${bus.routeId}`; //eslint-disable-line
+                                    location.href = `https://orlentransport.netlify.com/bus/${bus.id}`; //eslint-disable-line
                                 }}
                             >
                                 <h5>{bus.name}</h5>
                             </BusItem>
                         );
                     })}
-                    {this.state.busStopList.map((busStop, index) => {
-                        return (
-                            <BusItem key={index}>
-                                <h3>Przystanek {busStop.name}</h3>
-                            </BusItem>
-                        );
-                    })}
-                    <NewBus>Nowa linia</NewBus>
+                    <NewBus onClick={this.openNewBusLane}>Nowa linia</NewBus>
                 </BusList>
+                {this.state.newBusLaneActive &&
+                    <NewBusLane>
+                        <h4>Nowa linia</h4>
+                        <form>
+                            <div className="form-group">
+                                <label>Nazwa linii</label>
+                                <input type="text" 
+                                    value={this.state.newBusLaneName} 
+                                    onChange={evt => this.updateInputValue(evt)} 
+                                    className="form-control" id="busName" placeholder="nazwa busa" />
+                            </div>
+                            {this.state.busStopList.route.points.map((busStop, index) => {
+                                return (
+                                    <BusItem key={index}>
+                                        <h5>Przystanek {busStop.name}</h5>
+                                    </BusItem>
+                                );
+                            })}
+                            <NewBus onClick={this.addNewBusLane} type="submit" className="btn btn-primary">Wyślij</NewBus>
+                        </form>
+                    </NewBusLane>
+                }
                 <MapGL
                     {...this.state.viewport}
                     width="100%"
@@ -277,7 +387,7 @@ class Bus extends PureComponent {
                                 offsetTop={-10}
                             >
                                 <Circle
-                                    color="#fff"
+                                    color={this.getCircleColor(point)}
                                     size="20"
                                     onMouseOver={() => {
                                         const toolObj = {

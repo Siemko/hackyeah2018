@@ -11,6 +11,27 @@ import {
   Input
 } from "reactstrap";
 import wretch from "wretch";
+import styled from "styled-components";
+
+const NewTransport = styled.div`
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 1000;
+  display: inline-block;
+  background-color: #fff;
+  font-size: 16px;
+  text-transform: uppercase;
+  color: #212121;
+  margin-left: 15px;
+  padding: 15px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  font-weight: bolder;
+  &:hover {
+    text-decoration: none;
+    color: #212121;
+  }
+`
 
 class RouteGeneratorModal extends React.Component {
   constructor(props) {
@@ -42,9 +63,9 @@ class RouteGeneratorModal extends React.Component {
   render() {
     return (
       <div style={{ position: "fixed" }}>
-        <Button color="success" onClick={this.toggle}>
+        <NewTransport color="success" onClick={this.toggle}>
           NOWY TRANSPORT
-        </Button>
+        </NewTransport>
         <Modal isOpen={this.state.modal} toggle={this.toggle}>
           <ModalHeader toggle={this.toggle}>Nowy transport</ModalHeader>
           <Form
