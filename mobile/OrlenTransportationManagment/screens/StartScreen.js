@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { View, Text, TouchableOpacity, Alert, Image } from "react-native";
-import { BarCodeScanner, Permissions } from "expo";
+import { BarCodeScanner, Permissions, Linking } from "expo";
 import LoadingDialog from "../components/LoadingDialog";
 import RedButton from "../components/RedButton";
 
@@ -10,19 +10,35 @@ class StartScreen extends React.Component {
         hasCameraPermissions: null
     };
 
+    contactPress = () => {
+        Linking.openURL("tel:+123456789");
+    }
+
     qrCodePress = async () => {
-        const { status } = await Permissions.askAsync(Permissions.CAMERA);
-        const hasCameraPermission = status === "granted"
-        if (hasCameraPermission) {
-            this.props.navigation.navigate("ScannerScreen")
+        var { status } = await Permissions.askAsync(Permissions.CAMERA);
+        const hasCameraPermission = status === "granted";
+
+        var { status } = await Permissions.askAsync(Permissions.LOCATION);
+        const hasLocationPermission = status === "granted";
+
+        if (!hasCameraPermission) {
+            Alert.alert(
+                "Brak uprawnień",
+                "By skanować QR code musisz wyrazić zgodę na używanie kamery."
+            );
+        } else if (!hasLocationPermission) {
+            Alert.alert(
+                "Brak uprawnień",
+                "By włączyć mapę musisz wyrazić zgodę na używanie lokalizacji."
+            );
         } else {
-            Alert.alert("Brak uprawnień", "By skanować QR code musisz wyrazić zgodę na używanie kamery.")
+            this.props.navigation.navigate("ScannerScreen");
         }
     };
 
     issuesPress = () => {
-        this.props.showIssues()
-    }
+        this.props.showIssues();
+    };
 
     render() {
         return (
@@ -51,7 +67,7 @@ class StartScreen extends React.Component {
                     />
 
                     <RedButton
-                        title="QR code"
+                        title="Skanuj QR code"
                         style={{ flex: 1 }}
                         onPress={this.qrCodePress}
                     />
@@ -59,7 +75,8 @@ class StartScreen extends React.Component {
                     <View style={{ height: 20 }} />
 
                     <RedButton
-                        title="Pokaż aktualne awarie i problemy"
+                        onPress={this.contactPress}
+                        title="Kontakt do koordynatora"
                         style={{ flex: 1 }}
                     />
                 </View>

@@ -13,6 +13,7 @@
     "expo": "^31.0.5",
     "expo-cli": "^2.4.0",
     "immer": "^1.8.0",
+    "lodash.chunk": "^4.2.0",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz",
     "react-navigation": "^3.0.0",

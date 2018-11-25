@@ -1,9 +1,10 @@
 import React from "react";
 import { Constants, Location, Permissions, MapView } from "expo";
+import { connect } from "react-redux";
 import Circle from "../node_modules/react-native-maps/lib/components/MapCircle";
 import Polyline from "../node_modules/react-native-maps/lib/components/MapPolyline";
 
-export default class MapScreenn extends React.Component {
+class MapScreenn extends React.Component {
     state = {
         permissionsGranded: false,
         currentLocation: {
@@ -41,6 +42,8 @@ export default class MapScreenn extends React.Component {
             { enableHighAccuracy: true },
             this.userLocationChange
         );
+        const routeId = this.props.navigation.getParam("routeId", "0")
+        this.props.getRoute(routeId);
     }
 
     getLocation = async () => {
@@ -89,7 +92,7 @@ export default class MapScreenn extends React.Component {
                     longitudeDelta: 0.055
                 }}>
                 <Polyline
-                    coordinates={this.state.points}
+                    coordinates={this.props.route ? this.props.route.points : []}
                     strokeColor="#000"
                     strokeColors={[
                         "#7F0000",
@@ -105,3 +108,16 @@ export default class MapScreenn extends React.Component {
         );
     }
 }
+
+const mapStateToProps = state => ({
+    route: state.routes.route
+});
+
+const mapDispatchToProps = dispatch => ({
+    getRoute: code => dispatch.routes.getRoute(code)
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(MapScreenn);
