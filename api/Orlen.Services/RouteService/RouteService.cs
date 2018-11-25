@@ -175,7 +175,7 @@ namespace Orlen.Services.RouteService
             return result;
         }
 
-        public async Task<List<Point>> GenerateRouteFromPoints(GenerateRouteFromPointsRequest request)
+        public async Task<JContainer> GenerateRouteFromPoints(GenerateRouteFromPointsRequest request)
         {
             var result = new List<Point>();
             for (var i = 1; i < request.Points.Count; i++)
@@ -184,7 +184,7 @@ namespace Orlen.Services.RouteService
                 result.AddRange(route);
             }
 
-            return result;
+            return result.AsJContainer();
         }
     }
 }
