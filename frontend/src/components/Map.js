@@ -93,7 +93,7 @@ class Map extends Component {
         pickable: true,
         onHover: info => console.log("Hovered:", info),
         onClick: info => console.log("Clicked", info),
-        getLineColor: () => [0, 116, 217]
+        getLineColor: () => [169, 0, 35]
       })
     ];
   };
@@ -102,7 +102,7 @@ class Map extends Component {
     if (this.state.isLoading)
       return (
         <LoadingWrapper>
-          <ClimbingBoxLoader size={24} color="#0074D9" />
+          <ClimbingBoxLoader size={24} color="#a90023" />
         </LoadingWrapper>
       );
     if (this.state.hasError) return <div>ERROR!</div>;
@@ -119,7 +119,6 @@ class Map extends Component {
           onViewportChange={v => this.setState({ viewport: v })}
           {...this.state.viewport}
           layers={this.renderLines()}
-          onLayerClick={info => console.log(info)}
         >
           <StaticMap
             mapStyle="mapbox://styles/mapbox/navigation-preview-day-v2"
@@ -134,7 +133,7 @@ class Map extends Component {
                   offsetLeft={-10}
                   offsetTop={-10}
                 >
-                  <MapMarkerAlt color="#0074D9" size="20" />
+                  <MapMarkerAlt color="#a90023" size="20" />
                 </Marker>
               );
             })}
