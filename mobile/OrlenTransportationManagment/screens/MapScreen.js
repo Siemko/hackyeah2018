@@ -20,6 +20,12 @@ class MapScreenn extends React.Component {
             latitudeDelta: 0.0,
             longitudeDelta: 0.015
         },
+        regionn: {
+            latitude: 52.589333,
+            longitude: 19.677518,
+            latitudeDelta: 0.0,
+            longitudeDelta: 0.015
+        },
         autoCenter: true,
         points: [
             {
@@ -79,10 +85,10 @@ class MapScreenn extends React.Component {
                 <MapView
                     style={{ flex: 1 }}
                     initialRegion={{
-                        latitude: this.state.region.latitude,
-                        longitude: this.state.region.longitude,
+                        latitude: this.state.regionn.latitude,
+                        longitude: this.state.regionn.longitude,
                         latitudeDelta: 0.0,
-                        longitudeDelta: 0.015
+                        longitudeDelta: 0.050
                     }}>
                     <Circle
                         center={{
