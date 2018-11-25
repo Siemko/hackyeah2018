@@ -33,7 +33,7 @@ namespace Orlen.API.Controllers
             return await routeService.GenerateRouteFromPoints(request);
         }
 
-        [HttpPost, Route("bus-route/{id}")]
+        [HttpGet, Route("bus-route/{id}")]
         public async Task<JContainer> GenerateRouteFromPoints(int id)
         {
             return await routeService.GetBusRoute(id);
