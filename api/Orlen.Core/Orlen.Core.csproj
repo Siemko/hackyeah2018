@@ -158,6 +158,14 @@
     <Compile Include="Migrations\20181125020720_FieldsRenamed.designer.cs">
       <DependentUpon>20181125020720_FieldsRenamed.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20181125030540_pointsOrder.cs" />
+    <Compile Include="Migrations\20181125030540_pointsOrder.designer.cs">
+      <DependentUpon>20181125030540_pointsOrder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20181125031130_pointsOrder2.cs" />
+    <Compile Include="Migrations\20181125031130_pointsOrder2.designer.cs">
+      <DependentUpon>20181125031130_pointsOrder2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\DataContextModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

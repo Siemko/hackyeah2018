@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Orlen.API.Controllers
 {
@@ -10,6 +11,9 @@ namespace Orlen.API.Controllers
     {
 
         [HttpGet, Route("")]
-        public ContentResult Hello() => HelloApiMessage();
+        public async Task<ContentResult> Hello()
+        {
+            return await Task.FromResult(HelloApiMessage());
+        }
     }
 }
