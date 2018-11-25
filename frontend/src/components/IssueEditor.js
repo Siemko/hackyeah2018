@@ -20,13 +20,14 @@ class IssueEditor extends PureComponent {
 
   render() {
     if (!this.state.issueTypes) return null;
+    console.log(this.state.id);
     return (
       <div>
-        ISSUES: {this.state.issues.count}
+        Ograniczenia: {this.state.issues.length}
         {this.state.issues.map(issue => {
           return (
-            <div>
-              {issue.name}:{issue.value}
+            <div key={issue.name}>
+              {issue.name} {issue.value}
             </div>
           );
         })}
@@ -57,20 +58,48 @@ class IssueEditor extends PureComponent {
         />
         <button
           onClick={() => {
-            this.setState(prevState => ({
-              issues: [
-                ...prevState.issues,
-                {
-                  id: this.state.selectedIssueType.id,
-                  value: this.state.issueTypeValue
-                }
-              ],
-              selectedIssueType: null,
-              issueTypeValue: ""
-            }));
+            this.setState(
+              prevState => ({
+                issues: [
+                  ...prevState.issues,
+                  {
+                    id: this.state.selectedIssueType
+                      ? this.state.selectedIssueType.id
+                      : 1,
+                    value: this.state.issueTypeValue
+                  }
+                ],
+                selectedIssueType: null,
+                issueTypeValue: ""
+              }),
+              () => {
+                let promisesArr = [];
+                this.state.issues.forEach(issue => {
+                  promisesArr.push(
+                    wretch("https://orlenapi.azurewebsites.net/Section/issue")
+                      .post({
+                        issueTypeId: issue.id,
+                        value: issue.value,
+                        sectionId: this.state.id
+                      })
+                      .res()
+                  );
+                });
+                Promise.all(promisesArr);
+              }
+            );
           }}
         >
-          Add
+          Dodaj
+        </button>
+        <button
+          onClick={async () => {
+            wretch(`https://orlenapi.azurewebsites.net/Section/clear-issues/${this.state.id}`)
+              .delete()
+              .res();
+          }}
+        >
+          Usuń ograniczenia
         </button>
       </div>
     );

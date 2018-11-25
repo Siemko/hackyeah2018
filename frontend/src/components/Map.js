@@ -10,6 +10,8 @@ import wretch from "wretch";
 import styled from "styled-components";
 import logo from "../logo.png";
 import IssueEditor from "./IssueEditor";
+import RouteGeneratorModal from "./RouteGeneratorModal";
+import { withRouter } from "react-router-dom";
 
 const LoadingWrapper = styled.div`
   display: flex;
@@ -45,6 +47,7 @@ class Map extends PureComponent {
   };
 
   async componentDidMount() {
+    console.log(this.props.match);
     try {
       const points = await wretch("https://orlenapi.azurewebsites.net/Point")
         .get()
@@ -57,7 +60,11 @@ class Map extends PureComponent {
         start: points.find(x => x.id === section.startId),
         end: points.find(x => x.id === section.endId)
       }));
-      const route = await wretch("https://orlenapi.azurewebsites.net/Route/15")
+      const route = await wretch(
+        `https://orlenapi.azurewebsites.net/Route/${
+          this.props.match.params.id ? this.props.match.params.id : 1
+        }`
+      )
         .get()
         .json();
       this.setState({ points, sections, isLoading: false, route });
@@ -282,9 +289,10 @@ class Map extends PureComponent {
             </div>
           </Popup>
         )}
+        <RouteGeneratorModal />
       </MapGL>
     );
   }
 }
 
-export default Map;
+export default withRouter(Map);
