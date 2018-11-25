@@ -199,8 +199,32 @@ namespace Orlen.Services.RouteService
                 Id = request.Points[request.Points.Count - 1]
             });
 
-
             return result.AsJContainer();
+        }
+
+        public async Task<JContainer> GetBusRoute(int busId)
+        {
+            var result = new List<Point>();
+
+            var bus = await DataContext.Buses
+                .Include(v => v.Stops)
+                .FirstOrDefaultAsync(v => v.Id == busId);
+
+            if (bus == null)
+                return result.AsJContainer();
+
+            var points = bus.Stops.Select(v => v.PointId).ToList();
+
+            if (points.Count() < 2)
+                return result.AsJContainer();
+
+            var route = await GetRoute(new GenerateRouteRequest
+            {
+                StartPointId = points[0],
+                EndPointId = points[points.Count() - 1],
+            });
+
+            return route.AsJContainer();
         }
     }
 }
