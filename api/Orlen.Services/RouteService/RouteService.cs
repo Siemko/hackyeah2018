@@ -204,21 +204,25 @@ namespace Orlen.Services.RouteService
 
         public async Task<JContainer> GetBusRoute(int busId)
         {
-            var result = new List<Point>();
+            var route = await GetRoute(new GenerateRouteRequest
+            {
+                StartPointId = 1,
+                EndPointId = 42,
+            });
 
             var bus = await DataContext.Buses
                 .Include(v => v.Stops)
                 .FirstOrDefaultAsync(v => v.Id == busId);
 
             if (bus == null)
-                return result.AsJContainer();
+                return route.AsJContainer();
 
             var points = bus.Stops.Select(v => v.PointId).ToList();
 
             if (points.Count() < 2)
-                return result.AsJContainer();
+                return route.AsJContainer();
 
-            var route = await GetRoute(new GenerateRouteRequest
+            route = await GetRoute(new GenerateRouteRequest
             {
                 StartPointId = points[0],
                 EndPointId = points[points.Count() - 1],
