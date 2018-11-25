@@ -3,9 +3,18 @@ import MapGL, { Marker, StaticMap } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MAPBOX_TOKEN } from "../utils/constants";
 import { MapMarkerAlt, TimesCircle } from "styled-icons/fa-solid";
-import DATA from "../geo.json";
 import DeckGL, { GeoJsonLayer, MapView, LineLayer } from "deck.gl";
+import { ClimbingBoxLoader } from "react-spinners";
 import wretch from "wretch";
+import styled from "styled-components";
+
+const LoadingWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+`;
 class Map extends Component {
   state = {
     viewport: {
@@ -14,17 +23,24 @@ class Map extends Component {
       zoom: 14
     },
     points: null,
-    sections: null
+    sections: null,
+    isLoading: true
   };
 
   async componentDidMount() {
-    const points = await wretch("https://orlenapi.azurewebsites.net/Point")
-      .get()
-      .json();
-    const sections = await wretch("https://orlenapi.azurewebsites.net/Section")
-      .get()
-      .json();
-    this.setState({ points, sections });
+    try {
+      const points = await wretch("https://orlenapi.azurewebsites.net/Point")
+        .get()
+        .json();
+      const sections = await wretch(
+        "https://orlenapi.azurewebsites.net/Section"
+      )
+        .get()
+        .json();
+      this.setState({ points, sections, isLoading: false });
+    } catch (error) {
+      this.setState({ isLoading: false, hasError: true });
+    }
   }
 
   renderLines = () => {
@@ -32,16 +48,35 @@ class Map extends Component {
       return [section.start.lon, section.start.lat];
     });
 
+    const better = this.state.sections.map(section => {
+      return {
+        type: "Feature",
+        geometry: {
+          type: "LineString",
+          coordinates: [
+            [section.start.lon, section.start.lat],
+            [section.end.lon, section.end.lat]
+          ],
+          properties: {
+            id: section.id,
+            name: section.name,
+            issues: section.issues
+          }
+        }
+      };
+    });
+
     const r = {
       type: "FeatureCollection",
       features: [
-        {
-          type: "Feature",
-          geometry: {
-            type: "LineString",
-            coordinates: [...roads]
-          }
-        }
+        // {
+        //   type: "Feature",
+        //   geometry: {
+        //     type: "LineString",
+        //     coordinates: [...roads]
+        //   }
+        // }
+        ...better
       ]
     };
     return [
@@ -58,13 +93,19 @@ class Map extends Component {
         pickable: true,
         onHover: info => console.log("Hovered:", info),
         onClick: info => console.log("Clicked", info),
-        getLineColor: () => [0, 116, 217]
+        getLineColor: () => [169, 0, 35]
       })
     ];
   };
 
   render() {
-    if (!this.state.points || !this.state.sections) return null;
+    if (this.state.isLoading)
+      return (
+        <LoadingWrapper>
+          <ClimbingBoxLoader size={24} color="#a90023" />
+        </LoadingWrapper>
+      );
+    if (this.state.hasError) return <div>ERROR!</div>;
     return (
       <MapGL
         {...this.state.viewport}
@@ -78,7 +119,6 @@ class Map extends Component {
           onViewportChange={v => this.setState({ viewport: v })}
           {...this.state.viewport}
           layers={this.renderLines()}
-          onLayerClick={info => console.log(info)}
         >
           <StaticMap
             mapStyle="mapbox://styles/mapbox/navigation-preview-day-v2"
@@ -93,7 +133,7 @@ class Map extends Component {
                   offsetLeft={-10}
                   offsetTop={-10}
                 >
-                  <MapMarkerAlt color="#0074D9" size="20" />
+                  <MapMarkerAlt color="#a90023" size="20" />
                 </Marker>
               );
             })}
