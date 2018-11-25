@@ -19,7 +19,7 @@ namespace Orlen.Services.PointService
 
         public async Task<JContainer> GetAll()
         {
-            return (await DataContext.Points.Select(p => new { p.Id, p.Lat, p.Lon, p.Name }).ToListAsync()).AsJContainer();
+            return (await DataContext.Points.Select(p => new { p.Id, p.Lat, p.Lon, p.Name, p.IsGate }).ToListAsync()).AsJContainer();
         }
         public async Task Add(AddPointRequest request)
         {
@@ -51,6 +51,7 @@ namespace Orlen.Services.PointService
             point.Lat = request.Lat;
             point.Lon = request.Lon;
             point.Name = request.Name;
+            point.IsGate = request.IsGate;
             await DataContext.SaveChangesAsync();
         }
 
