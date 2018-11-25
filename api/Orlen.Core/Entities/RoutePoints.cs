@@ -1,6 +1,6 @@
 ﻿namespace Orlen.Core.Entities
 {
-    public class RoutePoint
+    public class RoutePoints
     {
         public int RouteId { get; set; }
         public int PointId { get; set; }

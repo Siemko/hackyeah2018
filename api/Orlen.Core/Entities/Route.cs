@@ -9,6 +9,6 @@ namespace Orlen.Core.Entities
         public decimal Width { get; set; }
         public decimal Length { get; set; }
         public decimal Height { get; set; }
-        public List<RoutePoint> RoutePoints { get; set; }
+        public List<RoutePoints> RoutePoints { get; set; }
     }
 }
