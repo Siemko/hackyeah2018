@@ -8,5 +8,6 @@ namespace Orlen.Services.RouteService
     {
         Task<JContainer> Get(int id);
         Task Generate(GenerateRouteRequest request);
+        //Task GenerateRouteFromPoints(GenerateRouteFromPointsRequest request);
     }
 }

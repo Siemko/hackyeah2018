@@ -117,5 +117,74 @@ namespace Orlen.Services.RouteService
             DataContext.RoutePoints.AddRange(routePoints);
             await DataContext.SaveChangesAsync();
         }
+
+        private async Task<List<Point>> GetRoute(int startPointId, int endPointId)
+        {
+            var intersections = new List<Node>();
+
+            var groups = await DataContext.Sections
+                //TODO: .Where wykluczenie nieczynnych na podstawie dancyh wejscicyjh
+                .GroupBy(g => g.StartId)
+                .ToListAsync();
+
+            foreach (var group in groups)
+            {
+                var node = new Node
+                {
+                    Id = group.Key,
+                    DistanceDict = new Dictionary<int, List<int>>()
+                };
+
+                foreach (var g in group)
+                {
+                    node.DistanceDict.Add(g.EndId, new List<int>(g.EndId));
+                }
+
+                intersections.Add(node);
+            }
+
+            var startPoint = await DataContext.Points.FirstOrDefaultAsync(p => p.Id == startPointId);
+            if (startPoint == null)
+                throw new ResourceNotFoundException($"There is no point with id {startPointId}");
+
+            var graph = new Graph(intersections, intersections.FindIndex(v => v.Id == startPoint.Id));
+
+            graph.InitializeNeighbors();
+            graph.TransverNode(graph.Root);
+
+            var result = new List<Point>();
+
+            if (graph.Root.DistanceDict.ContainsKey(endPointId))
+            {
+                var pointsInRouteId = graph.Root.DistanceDict[endPointId].ToArray();
+                var pointsInRoute = await DataContext.Points
+                    .Where(p => pointsInRouteId.Contains(p.Id)).ToListAsync();
+
+                foreach (var pointId in pointsInRouteId)
+                {
+                    var point = pointsInRoute.First(pir => pir.Id == pointId);
+                    result.Add(new Point
+                    {
+                        Id = point.Id,
+                        Latitude = point.Latitude,
+                        Longitude = point.Longitude
+                    });
+                }
+            }
+
+            return result;
+        }
+
+        public async Task<List<Point>> GenerateRouteFromPoints(GenerateRouteFromPointsRequest request)
+        {
+            var result = new List<Point>();
+            for (var i = 1; i < request.Points.Count; i++)
+            {
+                var route = await GetRoute(request.Points[i - 1], request.Points[i]);
+                result.AddRange(route);
+            }
+
+            return result;
+        }
     }
 }
