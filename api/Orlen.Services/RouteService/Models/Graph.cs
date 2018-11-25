@@ -55,7 +55,7 @@ namespace Orlen.Services.RouteService.Models
                             if (node.DistanceDict.ContainsKey(key))
                             {
                                 int currentDistance = node.DistanceDict[key].Count;
-                                if (neighborKeyDistance + neighborDistance > currentDistance)
+                                if (neighborKeyDistance + neighborDistance < currentDistance)
                                 {
                                     var nodeList = new List<int>();
                                     nodeList.AddRange(neighbor.Node.DistanceDict[key].ToArray());

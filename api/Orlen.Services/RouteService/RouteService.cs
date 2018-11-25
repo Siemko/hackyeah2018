@@ -51,8 +51,8 @@ namespace Orlen.Services.RouteService
 
             return (new
             {
-                route = route,
-                sections = sections
+                route,
+                sections
             }).AsJContainer();
         }
 
