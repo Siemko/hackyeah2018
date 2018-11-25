@@ -36,6 +36,10 @@ class StartScreen extends React.Component {
         }
     };
 
+    busPress = () => {
+        this.props.navigation.navigate("BusNumberScreen")
+    }
+
     issuesPress = () => {
         this.props.showIssues();
     };
@@ -67,9 +71,17 @@ class StartScreen extends React.Component {
                     />
 
                     <RedButton
-                        title="Skanuj QR code"
+                        title="Transport wielkogabarytowy"
                         style={{ flex: 1 }}
                         onPress={this.qrCodePress}
+                    />
+
+                    <View style={{ height: 20 }} />
+
+                    <RedButton
+                        onPress={this.busPress}
+                        title="Rozkład jazdy autobusów"
+                        style={{ flex: 1 }}
                     />
 
                     <View style={{ height: 20 }} />
