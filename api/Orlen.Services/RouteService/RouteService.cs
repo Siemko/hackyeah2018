@@ -179,6 +179,16 @@ namespace Orlen.Services.RouteService
                 result.AddRange(route);
             }
 
+            result.Insert(0, new Point
+            {
+                Id = request.Points[0]
+            });
+
+            result.Add(new Point
+            {
+                Id = request.Points[request.Points.Count - 1]
+            });
+
             return result.AsJContainer();
         }
     }

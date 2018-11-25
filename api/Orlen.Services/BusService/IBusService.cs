@@ -8,5 +8,6 @@ namespace Orlen.Services.BusService
     {
         Task<JContainer> Get();
         Task Add(AddBusRequest request);
+        Task<JContainer> GetBusStopes(int busId);
     }
 }
