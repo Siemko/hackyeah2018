@@ -10,6 +10,7 @@ using Orlen.API.Filters;
 using Orlen.Core;
 using Orlen.Services.IssueTypeService;
 using Orlen.Services.PointService;
+using Orlen.Services.RouteService;
 using Orlen.Services.SectionService;
 using Orlen.Services.UserService;
 using Swashbuckle.AspNetCore.Swagger;
@@ -41,11 +42,12 @@ namespace Orlen.API
             services.AddScoped<ISectionService, SectionService>();
             services.AddScoped<IPointService, PointService>();
             services.AddScoped<IIssueTypeService, IssueTypeService>();
+            services.AddScoped<IRouteService, RouteService>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddOptions();
 
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info { Title = "Orlen API", Version = "v1" }); });
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info { Title = "Orlen Transportation Managment API", Version = "v1" }); });
 
             services.AddAuthentication(o =>
             {
@@ -72,9 +74,11 @@ namespace Orlen.API
                 app.UseHsts();
             }
 
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+
             app.UseSwagger();
 
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "TakeShop API"); });
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Orlen Transportation Managment API"); });
 
             app.UseHttpsRedirection();
             app.UseMvc();

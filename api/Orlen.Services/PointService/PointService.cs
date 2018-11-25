@@ -19,14 +19,14 @@ namespace Orlen.Services.PointService
 
         public async Task<JContainer> GetAll()
         {
-            return (await DataContext.Points.Select(p => new { p.Id, p.Lat, p.Lon, p.Name }).ToListAsync()).AsJContainer();
+            return (await DataContext.Points.Select(p => new { p.Id, p.Latitude, p.Longitude, p.Name, p.IsGate }).ToListAsync()).AsJContainer();
         }
         public async Task Add(AddPointRequest request)
         {
             DataContext.Points.Add(new Point
             {
-                Lat = request.Lat,
-                Lon = request.Lon,
+                Latitude = request.Latitude,
+                Longitude = request.Longitude,
                 Name = request.Name
             });
             await DataContext.SaveChangesAsync();
@@ -48,9 +48,10 @@ namespace Orlen.Services.PointService
             if (point == null)
                 throw new ResourceNotFoundException($"There is no point with id {request.Id}");
 
-            point.Lat = request.Lat;
-            point.Lon = request.Lon;
+            point.Latitude = request.Latitude;
+            point.Longitude = request.Longitude;
             point.Name = request.Name;
+            point.IsGate = request.IsGate;
             await DataContext.SaveChangesAsync();
         }
 

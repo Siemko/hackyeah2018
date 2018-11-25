@@ -19,20 +19,21 @@ namespace Orlen.Services.SectionService
 
         public async Task<JContainer> GetAll()
         {
-            return (await DataContext.Sections.Select(s =>
+            var sections = await DataContext.Sections.Select(s =>
             new
             {
                 s.Id,
-                Start = new { s.Start.Lat, s.Start.Lon },
-                End = new { s.End.Lat, s.End.Lon },
+                s.StartId,
+                s.EndId,
                 s.Name,
                 Issues = s.Issues.Select(i => new
                 {
                     i.IssueType.Name,
                     i.Value
                 })
-            }).ToListAsync())
-            .AsJContainer();
+            }).ToListAsync();
+
+            return sections.AsJContainer();
         }
 
         public async Task Add(AddSectionRequest request)

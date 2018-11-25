@@ -31,7 +31,8 @@ namespace Orlen.Core.Migrations
 
                     b.Property<int?>("SectionId");
 
-                    b.Property<decimal?>("Value");
+                    b.Property<decimal?>("Value")
+                        .HasColumnType("decimal(18, 6)");
 
                     b.HasKey("Id");
 
@@ -63,11 +64,13 @@ namespace Orlen.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("Lat")
+                    b.Property<bool>("IsGate");
+
+                    b.Property<decimal>("Latitude")
                         .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 38, scale: 17)))
                         .HasColumnType("decimal(18, 6)");
 
-                    b.Property<decimal>("Lon")
+                    b.Property<decimal>("Longitude")
                         .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 38, scale: 17)))
                         .HasColumnType("decimal(18, 6)");
 
@@ -89,6 +92,40 @@ namespace Orlen.Core.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("Orlen.Core.Entities.Route", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Height");
+
+                    b.Property<decimal>("Length");
+
+                    b.Property<decimal>("Weight");
+
+                    b.Property<decimal>("Width");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Routes");
+                });
+
+            modelBuilder.Entity("Orlen.Core.Entities.RoutePoints", b =>
+                {
+                    b.Property<int>("RouteId");
+
+                    b.Property<int>("PointId");
+
+                    b.Property<int>("Order");
+
+                    b.HasKey("RouteId", "PointId");
+
+                    b.HasIndex("PointId");
+
+                    b.ToTable("RoutePoints");
                 });
 
             modelBuilder.Entity("Orlen.Core.Entities.Section", b =>
@@ -147,6 +184,19 @@ namespace Orlen.Core.Migrations
                     b.HasOne("Orlen.Core.Entities.Section", "Section")
                         .WithMany("Issues")
                         .HasForeignKey("SectionId");
+                });
+
+            modelBuilder.Entity("Orlen.Core.Entities.RoutePoints", b =>
+                {
+                    b.HasOne("Orlen.Core.Entities.Point", "Point")
+                        .WithMany("RoutePoints")
+                        .HasForeignKey("PointId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Orlen.Core.Entities.Route", "Route")
+                        .WithMany("RoutePoints")
+                        .HasForeignKey("RouteId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Orlen.Core.Entities.Section", b =>

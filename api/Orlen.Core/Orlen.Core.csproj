@@ -130,11 +130,41 @@
     <Compile Include="Entities\IssueType.cs" />
     <Compile Include="Entities\Point.cs" />
     <Compile Include="Entities\Role.cs" />
+    <Compile Include="Entities\Route.cs" />
+    <Compile Include="Entities\RoutePoints.cs" />
     <Compile Include="Entities\Section.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Migrations\20181124190152_InitialCreate.cs" />
     <Compile Include="Migrations\20181124190152_InitialCreate.designer.cs">
       <DependentUpon>20181124190152_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20181124191436_IssueTypeValuePrecision.cs" />
+    <Compile Include="Migrations\20181124191436_IssueTypeValuePrecision.designer.cs">
+      <DependentUpon>20181124191436_IssueTypeValuePrecision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20181125004257_IsGate.cs" />
+    <Compile Include="Migrations\20181125004257_IsGate.designer.cs">
+      <DependentUpon>20181125004257_IsGate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20181125012951_PointRoute.cs" />
+    <Compile Include="Migrations\20181125012951_PointRoute.designer.cs">
+      <DependentUpon>20181125012951_PointRoute.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20181125014009_PointRoute2.cs" />
+    <Compile Include="Migrations\20181125014009_PointRoute2.designer.cs">
+      <DependentUpon>20181125014009_PointRoute2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20181125020720_FieldsRenamed.cs" />
+    <Compile Include="Migrations\20181125020720_FieldsRenamed.designer.cs">
+      <DependentUpon>20181125020720_FieldsRenamed.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20181125030540_pointsOrder.cs" />
+    <Compile Include="Migrations\20181125030540_pointsOrder.designer.cs">
+      <DependentUpon>20181125030540_pointsOrder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20181125031130_pointsOrder2.cs" />
+    <Compile Include="Migrations\20181125031130_pointsOrder2.designer.cs">
+      <DependentUpon>20181125031130_pointsOrder2.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\DataContextModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
