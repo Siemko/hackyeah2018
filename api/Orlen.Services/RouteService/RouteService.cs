@@ -37,8 +37,8 @@ namespace Orlen.Services.RouteService
             {
                 var section = new Section
                 {
-                    EndId = route.Points.ElementAt(i-1).Id,
-                    StartId = route.Points.ElementAt(i).Id
+                    StartId = route.Points.ElementAt(i-1).Id,
+                    EndId = route.Points.ElementAt(i).Id
                 };
                 sections.Add(section);
             }
