@@ -92,7 +92,6 @@ class StartScreen extends React.Component {
                         style={{ flex: 1 }}
                     />
                 </View>
-                {this.props.loadingVisible && <LoadingDialog />}
             </View>
         );
     }
