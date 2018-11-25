@@ -3,10 +3,9 @@ import { View, Text, TouchableOpacity, Alert, StyleSheet } from "react-native";
 import { BarCodeScanner, Permissions } from "expo";
 
 class ScannerScreen extends React.Component {
-
     handleBarCodeScanned = ({ type, data }) => {
-        Alert.alert(`${type}`, `${data}`)
-    }
+        Alert.alert(`${type}`, `${data}`);
+    };
 
     render() {
         return (

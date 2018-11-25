@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@rematch/core": "^1.0.6",
-    "expo": "^31.0.2",
+    "expo": "^31.0.5",
+    "expo-cli": "^2.4.0",
     "immer": "^1.8.0",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz",
