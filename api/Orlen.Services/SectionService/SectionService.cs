@@ -23,8 +23,8 @@ namespace Orlen.Services.SectionService
             new
             {
                 s.Id,
-                Start = new { s.Start.Lat, s.Start.Lon },
-                End = new { s.End.Lat, s.End.Lon },
+                Start = new { s.Start.Latitude, s.Start.Longitude },
+                End = new { s.End.Latitude, s.End.Longitude },
                 s.Name,
                 Issues = s.Issues.Select(i => new
                 {
