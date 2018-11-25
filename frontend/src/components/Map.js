@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import MapGL, { Marker, StaticMap, Popup } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MAPBOX_TOKEN } from "../utils/constants";
@@ -24,7 +24,7 @@ const PopupWrapper = styled.div`
   background: #f3f3f3;
 `;
 
-class Map extends Component {
+class Map extends PureComponent {
   state = {
     viewport: {
       latitude: 52.589333,
