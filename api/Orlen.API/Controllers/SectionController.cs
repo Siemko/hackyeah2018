@@ -15,7 +15,7 @@ namespace Orlen.API.Controllers
             this.sectionService = sectionService;
         }
 
-        [HttpGet, ResponseCache(Duration = int.MaxValue)]
+        [HttpGet]
         public async Task<JContainer> Get()
         {
             return await sectionService.GetAll();
